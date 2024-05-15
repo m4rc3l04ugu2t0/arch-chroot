@@ -28,9 +28,9 @@ if [ "$swap_path" == 1 ]; then
     mkswap "$swap_path"
 fi
 
-echo "boot path"
+echo "root path"
 read root_path
-mkfs."$type" "$boot_path"
+mkfs."$type" "$root_path"
 echo "home? 
 if yes => press the key 1
 if not => press any key"
