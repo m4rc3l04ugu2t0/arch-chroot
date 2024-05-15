@@ -20,24 +20,50 @@ mkfs.fat -F 32 "$boot"
 echo "swap? 
 if yes => press the key 1
 if not => press any key"
-read swap
-if [ "$swap" == 1 ]; then
+read swap_path
+if [ "$swap_path" == 1 ]; then
     echo "partition path"
-    read swap_path
+    read swap
+    swap_path="$swap"
     mkswap "$swap_path"
 fi
 
-echo "root path"
+echo "boot path"
 read root_path
-mkfs."$type" "$root_path"
+mkfs."$type" "$boot_path"
 echo "home? 
 if yes => press the key 1
 if not => press any key"
-read home
+read home_path
 
-if [ "$home" == 1 ]; then
+if [ "$home_path" == 1 ]; then
     echo "partition path"
-    read home_path
+    read path
+    home_path="$path"
     mkfs."$type" "$home_path"
 fi
-lsblk -l
+clear
+lsblk
+echo "mount root"
+mount root_path /mnt
+echo "creating home directory"
+mkdir /mnt/home
+echo "creating boot directory"
+mkdir -p /mnt/boot/efi
+echo "mounting partitions"
+mount home_path /mnt/home
+mount boot_path /mnt/boot
+
+if [! -d "/mnt/boot/efi"]; then
+    mkdir /mnt/boot/rfi
+fi
+mount boot_path /mnt/boot/efi
+
+if [ "$swap_path" == 1 ]; then
+    swapon swap_path
+fi
+
+lsblk
+echo "Okay"
+lsblk
+
