@@ -9,6 +9,6 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 # Instala o compilador Rust
-pacman -Syu curl base-devel 
+pacman -S curl base-devel 
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 exec ../target/debug/rustinstallarch
