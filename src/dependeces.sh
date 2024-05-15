@@ -45,24 +45,23 @@ fi
 clear
 lsblk
 echo "mount root"
-mount root_path /mnt
+mount "$root_path" /mnt
 echo "creating home directory"
 mkdir /mnt/home
 echo "creating boot directory"
 mkdir -p /mnt/boot/efi
 echo "mounting partitions"
-mount home_path /mnt/home
-mount boot_path /mnt/boot
+mount "$home_path" /mnt/home
+mount "$boot_path" /mnt/boot
 
 if [! -d "/mnt/boot/efi"]; then
     mkdir /mnt/boot/rfi
 fi
-mount boot_path /mnt/boot/efi
+mount "$boot_path" /mnt/boot/efi
 
 if [ "$swap_path" == 1 ]; then
-    swapon swap_path
+    swapon "$swap_path"
 fi
 lsblk
 echo "Okay"
-lsblk
 
