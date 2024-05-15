@@ -62,7 +62,6 @@ mount boot_path /mnt/boot/efi
 if [ "$swap_path" == 1 ]; then
     swapon swap_path
 fi
-
 lsblk
 echo "Okay"
 lsblk
