@@ -2,6 +2,7 @@
 
 # echo "setting keyword"
 # loadkeys br-abnt2
+set -e
 
 lsblk -l
 echo "disk path"
