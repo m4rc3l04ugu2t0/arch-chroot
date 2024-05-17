@@ -14,7 +14,7 @@ echo "what is your partition configuration:
     2 => btrfs
 "
 read type
-echo "format boot partion, enter the path"
+echo "format boot partition, enter the path"
 read boot
 mkfs.fat -F 32 "$boot"
 echo "swap? 
@@ -34,12 +34,12 @@ mkfs."$type" "$root_path"
 echo "home? 
 if yes => press the key 1
 if not => press any key"
-read home_path
+read home_choice
 
-if [ "$home_path" == 1 ]; then
-    echo "partition path"
-    read path
-    home_path="$path"
+if [ "$home_choice" == 1 ]; then
+    echo "home partition path"
+    read home
+    home_path="$home"
     mkfs."$type" "$home_path"
 fi
 clear
@@ -52,16 +52,13 @@ echo "creating boot directory"
 mkdir -p /mnt/boot/efi
 echo "mounting partitions"
 mount "$home_path" /mnt/home
-mount "$boot_path" /mnt/boot
+mount "$boot" /mnt/boot
 
-if [! -d "/mnt/boot/efi"]; then
-    mkdir /mnt/boot/rfi
+if [ ! -d "/mnt/boot/efi" ]; then
+    mkdir /mnt/boot/efi
 fi
-mount "$boot_path" /mnt/boot/efi
+mount "$boot" /mnt/boot/efi
 
 if [ "$swap_path" == 1 ]; then
     swapon "$swap_path"
 fi
-lsblk
-echo "Okay"
-
