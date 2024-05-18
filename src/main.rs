@@ -63,6 +63,5 @@ fn main() {
     for service in services {
         run_command("systemctl", &["enable", service], dry_run);
     }
-
     println!("Configuração básica do Arch Linux concluída.");
 }
