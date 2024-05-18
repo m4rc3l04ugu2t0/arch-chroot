@@ -1,4 +1,4 @@
-use std::{io, str::FromStr};
+use std::io;
 
 use chrono_tz::Tz;
 
@@ -31,7 +31,7 @@ pub fn set_timezone() -> Result<(), String> {
 }
 
 fn valid_timezone(timezone: &str) -> bool {
-    if Tz::from_str(timezone).is_err() {
+    if timezone.parse::<Tz>().is_err() {
         println!("O fuso horário {} existe no sistema.", timezone);
         return false;
     };
