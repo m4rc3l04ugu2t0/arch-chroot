@@ -1,4 +1,4 @@
-use std::io;
+use std::{io, process::Command};
 
 use chrono_tz::Tz;
 
@@ -27,6 +27,11 @@ pub fn set_timezone() -> Result<Steps, String> {
         return Err(format!("Error ao executar o comando: {}", err));
     }
 
+    match get_date_output() {
+        Ok(stdout) => println!("Date => {}", stdout),
+        Err(err) => return Err(err),
+    }
+
     Ok(Steps::SetTimezone)
 }
 
@@ -37,4 +42,19 @@ fn valid_timezone(timezone: &str) -> bool {
     };
 
     true
+}
+
+fn get_date_output() -> Result<String, String> {
+    let output = Command::new("date")
+        .output()
+        .map_err(|e| format!("Falha ao converter a saída do comando para string: {}", e))?;
+
+    if !output.status.success() {
+        return Err("O comando date não foi executado com sucesso".to_string());
+    }
+
+    let stdout = String::from_utf8(output.stdout)
+        .map_err(|e| format!("Falha ao converter a saída do comando para string: {}", e))?;
+
+    Ok(stdout.trim().to_string())
 }
