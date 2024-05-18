@@ -19,7 +19,7 @@ struct State {
 pub fn configure() -> Result<(), String> {
     let mut state = load_state().unwrap_or(State { step: 0 });
     let steps: Vec<Box<dyn Fn() -> GlobalActions>> =
-        vec![Box::new(set_timezone), Box::new(set_timezone)];
+        vec![Box::new(set_timezone), Box::new(conf_sys_language)];
 
     for (i, step) in steps.iter().enumerate().skip(state.step) {
         println!("Executando etapa {}...", i + 1);
