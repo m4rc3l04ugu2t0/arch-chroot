@@ -1,5 +1,3 @@
-use std::io;
-
 use crate::set_timezone::set_timezone;
 
 // use std::fs::File;
@@ -38,14 +36,9 @@ fn main() {
     //     run_command("systemctl", &["enable", service], dry_run);
     // }
     // println!("Configuração básica do Arch Linux concluída.");
-    println!("Configuração do Fuso Horário");
-    println!("Selecione o fuso horário (ex: America/Sao_Paulo):");
-    let mut timezone = String::new();
-    io::stdin()
-        .read_line(&mut timezone)
-        .expect("Falha ao ler a entrada do usuário.");
-    let timezone = timezone.trim(); // Remover caracteres de espaço em branco
 
     // Configurar fuso horário
-    set_timezone(timezone);
+    if let Err(err) = set_timezone() {
+        eprint!("{:?}", err);
+    }
 }
