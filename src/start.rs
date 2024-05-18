@@ -9,9 +9,12 @@ use crate::{
 
 pub fn run() {
     loop {
-        let mut action = GlobalActions::ConfigTimezone;
-        match config_system(action) {
-            GlobalActions::Successfull(true) => {}
+        let mut _action = GlobalActions::ConfigTimezone;
+        match config_system(_action) {
+            GlobalActions::Successfull(true) => {
+                _action = GlobalActions::ChengeSysLanguage;
+                continue;
+            }
             GlobalActions::Fix(true) => {
                 println!("Ok timezone");
                 break;
