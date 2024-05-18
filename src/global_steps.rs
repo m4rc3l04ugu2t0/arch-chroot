@@ -1,11 +1,6 @@
-pub enum TypeError {
-    TimezoneError(String),
-}
 pub enum GlobalActions {
-    ConfigTimezone,
-    ChengeSysLanguage,
-    Successfull(bool),
+    Successfull,
     Fix(bool),
-    Error(TypeError),
+    Error(String),
     End,
 }

@@ -1,13 +1,15 @@
+use configure_system::configure;
+
 // use std::fs::File;
 // use std::io::{self, Write};
 // use std::process::Command;
 mod conf_sys;
 mod config_language;
 mod config_timezone;
+mod configure_system;
 mod errors;
 mod global_steps;
 mod run_commands;
-mod start;
 
 fn main() {
     // let dry_run = true; // Mude para false para executar de verdade
@@ -41,5 +43,9 @@ fn main() {
     // println!("Configuração básica do Arch Linux concluída.");
 
     // Configurar fuso horário
-    start::run();
+    if let Err(err) = configure() {
+        eprintln!("Erro na configuração do sistema: {}", err);
+    } else {
+        println!("Configuração do sistema concluída com sucesso.");
+    }
 }

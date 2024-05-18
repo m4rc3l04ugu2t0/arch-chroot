@@ -7,7 +7,7 @@ use chrono_tz::Tz;
 
 use crate::{global_steps::GlobalActions, run_commands::run_command};
 
-pub fn set_timezone() -> Result<GlobalActions, String> {
+pub fn set_timezone() -> GlobalActions {
     println!("Configuração do Fuso Horário");
     println!("Selecione o fuso horário (ex: America/Sao_Paulo):");
     let mut timezone = String::new();
@@ -18,7 +18,7 @@ pub fn set_timezone() -> Result<GlobalActions, String> {
     let timezone = timezone.trim(); // Remover caracteres de espaço em branco
                                     // Executar o comando para configurar o fuso horário
     if !valid_timezone(timezone) {
-        return Err(format!("Fuso horário inválido: {}", timezone));
+        return GlobalActions::Error(format!("Fuso horário inválido: {}", timezone));
     }
     let command = "ln";
     let args = [
@@ -28,15 +28,15 @@ pub fn set_timezone() -> Result<GlobalActions, String> {
     ];
 
     if let Err(err) = run_command(&command, &args, false) {
-        return Err(format!("Error ao executar o comando: {}", err));
+        return GlobalActions::Error(format!("Error ao executar o comando: {}", err));
     }
 
     match get_date_output() {
         Ok(stdout) => println!("Date => {}", stdout),
-        Err(err) => return Err(err),
+        Err(err) => return GlobalActions::Error(err),
     }
 
-    Ok(GlobalActions::Successfull(true))
+    GlobalActions::Successfull
 }
 
 fn valid_timezone(timezone: &str) -> bool {
