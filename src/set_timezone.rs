@@ -7,5 +7,5 @@ pub fn set_timezone(timezone: &str) {
         &format!("/usr/share/zoneinfo/{}", timezone),
         "/etc/localtime",
     ];
-    run_command(&command, &args, true);
+    run_command(&command, &args, false);
 }
