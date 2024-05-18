@@ -15,6 +15,10 @@ pub fn run() {
                 _action = GlobalActions::ChengeSysLanguage;
                 continue;
             }
+            GlobalActions::ChengeSysLanguage => {
+                println!("Change language");
+                break;
+            }
             GlobalActions::Fix(true) => {
                 println!("Ok timezone");
                 break;
