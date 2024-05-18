@@ -5,9 +5,9 @@ use std::{
 
 use chrono_tz::Tz;
 
-use crate::{conf_sys::Steps, run_commands::run_command};
+use crate::{global_steps::GlobalActions, run_commands::run_command};
 
-pub fn set_timezone() -> Result<Steps, String> {
+pub fn set_timezone() -> Result<GlobalActions, String> {
     println!("Configuração do Fuso Horário");
     println!("Selecione o fuso horário (ex: America/Sao_Paulo):");
     let mut timezone = String::new();
@@ -36,7 +36,7 @@ pub fn set_timezone() -> Result<Steps, String> {
         Err(err) => return Err(err),
     }
 
-    Ok(Steps::SetTimezone)
+    Ok(GlobalActions::Successfull(true))
 }
 
 fn valid_timezone(timezone: &str) -> bool {

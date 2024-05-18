@@ -1,26 +1,19 @@
-use crate::set_timezone::set_timezone;
+use crate::{
+    config_timezone::set_timezone::set_timezone,
+    errors::generic::handle_error,
+    global_steps::{GlobalActions, TypeError},
+};
 
-pub enum Steps {
-    Continue,
-    End,
-    SetTimezone,
-    Error,
-}
-
-pub fn config_system(next: Steps) -> Steps {
+pub fn config_system(next: GlobalActions) -> GlobalActions {
     match next {
-        Steps::SetTimezone => {
+        GlobalActions::ConfigTimezone => {
             if let Err(err) = set_timezone() {
-                eprint!("{}", err);
-                return Steps::Error;
+                return handle_error(err);
             }
-            return Steps::SetTimezone;
-        }
-        Steps::End => {
-            return Steps::End;
+            return GlobalActions::Successfull(true);
         }
         _ => {}
     }
 
-    Steps::End
+    GlobalActions::End
 }

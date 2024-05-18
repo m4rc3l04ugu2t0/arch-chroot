@@ -2,8 +2,11 @@
 // use std::io::{self, Write};
 // use std::process::Command;
 mod conf_sys;
+mod config_language;
+mod config_timezone;
+mod errors;
+mod global_steps;
 mod run_commands;
-mod set_timezone;
 mod start;
 
 fn main() {
