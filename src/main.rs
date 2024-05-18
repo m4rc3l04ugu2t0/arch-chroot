@@ -1,10 +1,10 @@
 // use std::fs::File;
 // use std::io::{self, Write};
 // use std::process::Command;
+mod conf_sys;
 mod run_commands;
 mod set_timezone;
 mod start;
-mod steps;
 
 fn main() {
     // let dry_run = true; // Mude para false para executar de verdade

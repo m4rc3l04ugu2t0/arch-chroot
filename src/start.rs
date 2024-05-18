@@ -1,9 +1,9 @@
-use crate::steps::{manager_steps, Steps};
+use crate::conf_sys::{config_system, Steps};
 
 pub fn run() {
     loop {
         let mut step = Steps::SetTimezone;
-        match manager_steps(step) {
+        match config_system(step) {
             Steps::Continue => {
                 continue;
             }

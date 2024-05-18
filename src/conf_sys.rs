@@ -7,14 +7,14 @@ pub enum Steps {
     Error,
 }
 
-pub fn manager_steps(next: Steps) -> Steps {
+pub fn config_system(next: Steps) -> Steps {
     match next {
         Steps::SetTimezone => {
             if let Err(err) = set_timezone() {
                 eprint!("{}", err);
                 return Steps::Error;
             }
-            return Steps::End;
+            return Steps::SetTimezone;
         }
         Steps::End => {
             return Steps::End;

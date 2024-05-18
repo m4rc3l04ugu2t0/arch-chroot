@@ -1,13 +1,17 @@
-use std::{io, process::Command};
+use std::{
+    io::{self, Write},
+    process::Command,
+};
 
 use chrono_tz::Tz;
 
-use crate::{run_commands::run_command, steps::Steps};
+use crate::{conf_sys::Steps, run_commands::run_command};
 
 pub fn set_timezone() -> Result<Steps, String> {
     println!("Configuração do Fuso Horário");
     println!("Selecione o fuso horário (ex: America/Sao_Paulo):");
     let mut timezone = String::new();
+    io::stdout().flush().expect("Error clear buffer");
     io::stdin()
         .read_line(&mut timezone)
         .expect("Falha ao ler a entrada do usuário.");
