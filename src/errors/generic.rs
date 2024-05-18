@@ -8,7 +8,7 @@ pub fn handle_error(error: String) -> GlobalActions {
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut input).unwrap();
 
-    let test = false;
+    let test = true;
 
     if test {
         return GlobalActions::Fix(false);
