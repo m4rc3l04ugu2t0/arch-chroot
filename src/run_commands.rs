@@ -1,34 +1,56 @@
-use nix::unistd::{execv, fork, ForkResult};
-use std::{ffi::CString, path::Path};
+use std::process::{Command, Output};
 
-pub fn run_command(command: &str, args: &[&str], dry_run: bool) -> Result<(), String> {
-    if dry_run {
-        println!("Dry run: {} {:?}", command, args);
-        return Ok(());
-    }
+pub fn run_command(command: &mut Command) -> Result<Output, String> {
+    let output = command
+        .output()
+        .map_err(|e| format!("Falha ao executar comando: {}", e))?;
 
-    // Ensure the command exists in the new root
-    let command_path = format!("/usr/bin/{}", command);
-    if !Path::new(&command_path).exists() {
-        let message_error = format!("Command not found: {}", command_path);
-        return Err(message_error);
-    }
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        let stderr_str = stderr.to_string();
 
-    let command_cstr = CString::new(command_path).expect("CString::new failed");
-    let args_cstr: Vec<CString> = args.iter().map(|&arg| CString::new(arg).unwrap()).collect();
-    let args_cstr_ref: Vec<&CString> = args_cstr.iter().collect();
-
-    match unsafe { fork() } {
-        Ok(ForkResult::Parent { child }) => {
-            let _ = nix::sys::wait::waitpid(child, None);
-        }
-        Ok(ForkResult::Child) => {
-            if let Err(err) = execv(&command_cstr, &args_cstr_ref) {
-                return Err(err.to_string());
+        if is_correctable_error(&stderr_str) {
+            if correct_errror(&stderr).is_ok() {
+                let retry_output = command
+                    .output()
+                    .map_err(|e| format!("Falha ao executar comando: {}", e))?;
+                if retry_output.status.success() {
+                    return Ok(retry_output);
+                } else {
+                    let retry_stderr = String::from_utf8_lossy(&retry_output.stderr);
+                    return Err(format!("Erro no comando após correção: {}", retry_stderr));
+                }
             }
         }
-        Err(err) => return Err(format!("Erro ao criar um novo processo: {}", err)),
+
+        return Err(format!("Erro no comando: {}", stderr));
+    }
+    Ok(output)
+}
+
+pub fn is_correctable_error(stderr: &str) -> bool {
+    stderr.contains("dependência faltando") || stderr.contains("não encontrado")
+}
+
+pub fn correct_errror(stderr: &str) -> Result<(), String> {
+    if stderr.contains("dependencia faltando") {
+        let missing_dep = extract_missing_dependency(stderr);
+
+        if let Some(dep) = missing_dep {
+            run_command(&mut Command::new("pacman").arg("-S").arg("--noconfirm").arg(dep))
+                .map_err(|e| format!("Falha ao corrigir dependência: {}", e))?;
+
+            return Ok(());
+        }
     }
 
-    Ok(())
+    Err("Erro não corrigível".to_string())
+}
+
+fn extract_missing_dependency(stderr: &str) -> Option<&str> {
+    // Extraia o nome da dependência faltante do stderr
+    // Exemplo simples, ajuste conforme necessário
+    stderr
+        .split_whitespace()
+        .find(|&word| word == "dependência")
 }

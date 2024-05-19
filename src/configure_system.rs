@@ -1,8 +1,9 @@
 #![allow(unused)]
 use crate::{
-    conf_sys::config_system, config_language::conf_language::conf_sys_language,
-    config_timezone::set_timezone::set_timezone, errors::generic::handle_error,
-    global_steps::GlobalActions,
+    conf_sys::config_system,
+    config_timezone::set_timezone::set_timezone,
+    configure_lanaguage::set_language::set_language,
+    run_commands::{correct_errror, is_correctable_error},
 };
 use serde::{Deserialize, Serialize};
 use std::{
@@ -18,29 +19,35 @@ struct State {
 
 pub fn configure() -> Result<(), String> {
     let mut state = load_state().unwrap_or(State { step: 0 });
-    let steps: Vec<Box<dyn Fn() -> GlobalActions>> =
-        vec![Box::new(set_timezone), Box::new(conf_sys_language)];
+    let steps: Vec<Box<dyn Fn() -> Result<(), String>>> =
+        vec![Box::new(set_timezone), Box::new(set_language)];
 
     for (i, step) in steps.iter().enumerate().skip(state.step) {
         println!("Executando etapa {}...", i + 1);
-        match step() {
-            GlobalActions::Successfull => {
-                state.step = i + 1;
-                save_state(&state)?;
-            }
-            GlobalActions::Error(err) => {
-                eprintln!("Erro na etapa {}: {}", i + 1, err);
-                println!("{}", err);
-            }
-            GlobalActions::Fix(true) => {
-                state.step = i + 1;
-            }
-            GlobalActions::Fix(false) => {
-                println!("Error fix");
-                break;
-            }
-            GlobalActions::End => {
-                break;
+        loop {
+            match step() {
+                Ok(_) => {
+                    state.step = i + 1;
+                    save_state(&state)?;
+                    break;
+                }
+                Err(err) => {
+                    eprintln!("Erro na etapa {}: {}", i + 1, err);
+
+                    if is_correctable_error(&err) {
+                        println!("Tentando corrigir o erro na etapa {}...", i + 1);
+                        if correct_errror(&err).is_ok() {
+                            println!("Erro corrigido, reexecutando etapa {}...", i + 1);
+                            continue;
+                        } else {
+                            eprintln!("Erro não pôde ser corrigido automaticamente.");
+                        }
+                    }
+
+                    println!("Erro completo: {}", err);
+                    save_state(&state)?;
+                    return Err(err);
+                }
             }
         }
     }
