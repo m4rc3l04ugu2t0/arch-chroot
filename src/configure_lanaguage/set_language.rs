@@ -12,7 +12,7 @@ use crate::run_commands::run_command;
 pub fn set_language() -> Result<(), String> {
     println!("Configurando linguagem do sistema...");
     let languages = [
-        "aa_DJ.UTF-8",
+        "aa_DJ.UTF-8 UTF-8",
         "aa_DJ.ISO-8859-1",
         "aa_ER.UTF-8",
         "aa_ET.UTF-8",
@@ -452,23 +452,15 @@ pub fn set_language() -> Result<(), String> {
         .interact()
         .unwrap();
 
+    let language_selected = languages[selection];
+
     println!("Você escolheu: {}", languages[selection]);
 
-    let mut language = String::new();
-    io::stdout()
-        .flush()
-        .map_err(|e| format!("Falha ao ler entrada: {}", e))?;
-    io::stdin()
-        .read_line(&mut language)
-        .map_err(|e| format!("Error: {}", e))?;
-
-    let language = language.trim();
-
-    edit_locale_gen(language)?;
+    edit_locale_gen(language_selected)?;
 
     run_command(&mut Command::new("locale-gen"))?;
 
-    configure_locale_conf(language)?;
+    configure_locale_conf(language_selected)?;
 
     println!("Linguagem do sistema configurada com sucesso.");
     Ok(())
