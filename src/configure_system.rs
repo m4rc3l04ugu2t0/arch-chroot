@@ -7,8 +7,9 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use std::{
-    fs::OpenOptions,
+    fs::{self, OpenOptions},
     io::{BufReader, Read},
+    path::Path,
     process::exit,
 };
 
@@ -69,6 +70,14 @@ fn load_state() -> Result<State, String> {
 
 fn save_state(state: &State) -> Result<(), String> {
     let state_file = "state.json";
+
+    let state_dir = Path::new(state_file).parent().unwrap();
+
+    if !state_dir.exists() {
+        fs::create_dir(state_dir)
+            .map_err(|e| format!("Falha ao criar diretório {}: {}", state_dir.display(), e))?;
+    }
+
     let file = OpenOptions::new()
         .write(true)
         .truncate(true)
