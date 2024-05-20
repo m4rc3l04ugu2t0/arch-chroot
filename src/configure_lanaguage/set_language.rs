@@ -12,7 +12,7 @@ use crate::run_commands::run_command;
 pub fn set_language() -> Result<(), String> {
     println!("Configurando linguagem do sistema...");
     let languages = [
-        "aa_DJ.UTF-8 UTF-8",
+        "aa_DJ.UTF-8",
         "aa_DJ.ISO-8859-1",
         "aa_ER.UTF-8",
         "aa_ET.UTF-8",
@@ -443,6 +443,9 @@ pub fn set_language() -> Result<(), String> {
         "yue_HK.UTF-8",
         "zh_CN.UTF-8",
         "zh_HK.UTF-8",
+        "zh_SG.UTF-8",
+        "zh_TW.UTF-8",
+        "zu_ZA.UTF-8",
     ];
 
     let selection = Select::with_theme(&ColorfulTheme::default())
