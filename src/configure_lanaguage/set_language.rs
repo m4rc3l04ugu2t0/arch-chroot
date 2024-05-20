@@ -4,10 +4,29 @@ use std::{
     process::Command,
 };
 
+use dialoguer::{theme::ColorfulTheme, Select};
+
 use crate::run_commands::run_command;
 
 pub fn set_language() -> Result<(), String> {
     println!("Configurando linguagem do sistema...");
+    let languages = vec![
+        "English",
+        "Español",
+        "Português",
+        "Français",
+        "Deutsch",
+        "Italiano",
+    ];
+
+    let selection = Select::with_theme(&ColorfulTheme::default())
+        .with_prompt("Selecione uma linguagem")
+        .items(&languages)
+        .default(6)
+        .interact()
+        .unwrap();
+
+    println!("Você escolheu: {}", languages[selection]);
 
     let mut language = String::new();
     io::stdout()
@@ -21,7 +40,7 @@ pub fn set_language() -> Result<(), String> {
 
     edit_locale_gen(language)?;
 
-    run_command(&mut Command::new("locale - gen"))?;
+    run_command(&mut Command::new("locale-gen"))?;
 
     configure_locale_conf(language)?;
 
