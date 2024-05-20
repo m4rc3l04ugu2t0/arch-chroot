@@ -69,7 +69,7 @@ fn load_state() -> Result<State, String> {
 }
 
 fn save_state(state: &State) -> Result<(), String> {
-    let state_file = "state.json";
+    let state_file = "./state.json";
 
     let state_dir = Path::new(state_file).parent().unwrap();
 
