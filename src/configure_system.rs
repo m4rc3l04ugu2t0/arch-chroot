@@ -74,6 +74,7 @@ fn save_state(state: &State) -> Result<(), String> {
         .truncate(true)
         .open(state_file)
         .map_err(|e| format!("Falha ao salvar estado: {}", e))?;
+    serde_json::to_writer(file, state).map_err(|e| format!("Falha ao salvar estado: {}", e))?;
 
     Ok(())
 }
