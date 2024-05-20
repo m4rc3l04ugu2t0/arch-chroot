@@ -3,14 +3,14 @@ use crate::{
     conf_sys::config_system,
     config_timezone::set_timezone::set_timezone,
     configure_lanaguage::set_language::set_language,
-    run_commands::{correct_errror, is_correctable_error},
+    run_commands::{correct_errror, is_correctable_error, run_command},
 };
 use serde::{Deserialize, Serialize};
 use std::{
     fs::{self, OpenOptions},
     io::{BufReader, Read},
     path::Path,
-    process::exit,
+    process::{exit, Command},
 };
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -74,8 +74,9 @@ fn save_state(state: &State) -> Result<(), String> {
     let state_dir = Path::new(state_file).parent().unwrap();
 
     if !state_dir.exists() {
-        fs::create_dir(state_dir)
-            .map_err(|e| format!("Falha ao criar diretório {}: {}", state_dir.display(), e))?;
+        run_command(&mut Command::new("mkdir state.json"));
+        // fs::create_dir(state_dir)
+        //     .map_err(|e| format!("Falha ao criar diretório {}: {}", state_dir.display(), e))?;
     }
 
     let file = OpenOptions::new()
