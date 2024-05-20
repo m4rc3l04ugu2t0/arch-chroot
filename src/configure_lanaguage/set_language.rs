@@ -498,7 +498,7 @@ fn edit_locale_gen(language: &str) -> Result<(), String> {
 }
 
 fn configure_locale_conf(language: &str) -> Result<(), String> {
-    let locale_conf_path = "/etc/locale.conf";
+    let locale_conf_path = "/etc/locale.gen";
     let content = format!("LANG={}\n", language);
 
     let mut file = OpenOptions::new()
