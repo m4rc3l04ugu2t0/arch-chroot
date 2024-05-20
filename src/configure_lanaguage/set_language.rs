@@ -502,14 +502,13 @@ fn edit_locale_gen(language: &str) -> Result<(), String> {
 
 fn configure_locale_conf(language: &str) -> Result<(), String> {
     let locale_conf_path = "/etc/locale.gen";
-    let content = format!("LANG={}\n", language);
 
     let mut file = OpenOptions::new()
         .write(true)
         .truncate(true)
         .open(locale_conf_path)
         .map_err(|e| format!("Falha ao abrir {} para escrita: {}", locale_conf_path, e))?;
-    file.write_all(content.as_bytes())
+    file.write_all(language.as_bytes())
         .map_err(|e| format!("Falha ao escrever no {}: {}", locale_conf_path, e))?;
     Ok(())
 }
