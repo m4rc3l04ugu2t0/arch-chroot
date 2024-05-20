@@ -476,16 +476,16 @@ fn edit_locale_gen(language: &str) -> Result<(), String> {
         .open(locale_gen_path)
         .map_err(|e| format!("Falha ao abrir {}: {}", locale_gen_path, e))?;
     let reader = BufReader::new(file);
+    let mut lines = Vec::new();
 
     let mut new_content = String::new();
     for line in reader.lines() {
-        let line = line.map_err(|e| format!("Falha ao ler linha: {}", e))?;
-        if line.contains(language) && line.starts_with('#') {
-            new_content.push_str(&line[1..]);
-        } else {
-            new_content.push_str(&line);
+        let mut line = line.map_err(|e| format!("Falha ao ler linha: {}", e))?;
+        if line.trim() == format!("#{}", language) {
+            line = language.to_string();
         }
-        new_content.push('\n');
+
+        lines.push(line);
     }
 
     let mut file = OpenOptions::new()
@@ -494,8 +494,9 @@ fn edit_locale_gen(language: &str) -> Result<(), String> {
         .open(locale_gen_path)
         .map_err(|e| format!("Falha ao abrir {} para escrita: {}", locale_gen_path, e))?;
 
-    file.write_all(new_content.as_bytes())
-        .map_err(|e| format!("Falha ao escrever no {}: {}", locale_gen_path, e))?;
+    for line in lines {
+        writeln!(file, "{}", line);
+    }
 
     Ok(())
 }
