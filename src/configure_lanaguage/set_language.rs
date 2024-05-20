@@ -478,14 +478,12 @@ fn edit_locale_gen(language: &str) -> Result<(), String> {
     let reader = BufReader::new(file);
     let mut lines = Vec::new();
 
-    let mut new_content = String::new();
     for line in reader.lines() {
         let mut line = line.map_err(|e| format!("Falha ao ler linha: {}", e))?;
-        if line.trim() == format!("#{}", language) {
+        if line.trim() == format!("#{}", language.trim()) {
             line = language.to_string();
+            lines.push(line);
         }
-
-        lines.push(line);
     }
 
     let mut file = OpenOptions::new()
