@@ -502,9 +502,15 @@ const LANGUAGES: [&str; 489] = [
 ];
 pub fn set_language() -> Result<(), String> {
     println!("Configurando linguagem do sistema...");
+    println!("Selcione com espaço");
 
     let language_selected = get_user_selections();
     println!("Você escolheu: ");
+
+    if language_selected.len() < 1 {
+        println!("Selecione a linguagem da ISO tambem!");
+        get_user_selections();
+    }
 
     for selection in &language_selected {
         println!("{}", selection)
