@@ -535,7 +535,7 @@ fn custom_theme() -> ColorfulTheme {
 }
 
 fn get_user_selections() -> Vec<String> {
-    let selections = MultiSelect::with_theme(&ColorfulTheme::default())
+    let selections = MultiSelect::with_theme(&custom_theme())
         .with_prompt("Selecione uma linguagem. Caso selecione so uma ISO ocasionara em error, selecione com a tecla 'espaço' uma linguagem e uma ISO!")
         .items(&LANGUAGES)
         .interact()
