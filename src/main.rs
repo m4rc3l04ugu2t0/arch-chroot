@@ -4,6 +4,7 @@ use configure_system::configure;
 // use std::io::{self, Write};
 // use std::process::Command;
 mod conf_sys;
+mod config;
 mod config_timezone;
 mod configure_lanaguage;
 mod configure_system;
