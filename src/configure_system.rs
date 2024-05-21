@@ -2,7 +2,8 @@
 use crate::{
     conf_sys::config_system,
     config_timezone::set_timezone::set_timezone,
-    configure_keymaps::set_keymaps::configure_keymaps,
+    configure_hostname::set_hostname::set_hostname,
+    configure_keymaps::set_keymaps::set_keymaps,
     configure_lanaguage::set_language::set_language,
     run_commands::{correct_errror, is_correctable_error},
 };
@@ -24,7 +25,8 @@ pub fn configure() -> Result<(), String> {
     let steps: Vec<Box<dyn Fn() -> Result<(), String>>> = vec![
         Box::new(set_timezone),
         Box::new(set_language),
-        Box::new(configure_keymaps),
+        Box::new(set_keymaps),
+        Box::new(set_hostname),
     ];
 
     for (i, step) in steps.iter().enumerate().skip(state.step) {
