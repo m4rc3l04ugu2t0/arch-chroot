@@ -2,6 +2,7 @@
 use crate::{
     conf_sys::config_system,
     config_timezone::set_timezone::set_timezone,
+    configure_keymaps::set_keymaps::configure_keymaps,
     configure_lanaguage::set_language::set_language,
     run_commands::{correct_errror, is_correctable_error},
 };
@@ -20,8 +21,11 @@ struct State {
 
 pub fn configure() -> Result<(), String> {
     let mut state = load_state().unwrap_or(State { step: 0 });
-    let steps: Vec<Box<dyn Fn() -> Result<(), String>>> =
-        vec![Box::new(set_timezone), Box::new(set_language)];
+    let steps: Vec<Box<dyn Fn() -> Result<(), String>>> = vec![
+        Box::new(set_timezone),
+        Box::new(set_language),
+        Box::new(configure_keymaps),
+    ];
 
     for (i, step) in steps.iter().enumerate().skip(state.step) {
         println!("Executando etapa {}...", i + 1);

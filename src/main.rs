@@ -6,8 +6,10 @@ use configure_system::configure;
 mod conf_sys;
 mod config;
 mod config_timezone;
+mod configure_keymaps;
 mod configure_lanaguage;
 mod configure_system;
+mod functions;
 mod run_commands;
 
 fn main() {

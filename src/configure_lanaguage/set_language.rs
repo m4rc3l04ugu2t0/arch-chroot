@@ -1,5 +1,8 @@
 #![allow(unused)]
-use crate::{config::languages::LANGUAGES, run_commands::run_command};
+use crate::{
+    config::languages::LANGUAGES, functions::get_user_selections::get_user_selections,
+    run_commands::run_command,
+};
 use console::style;
 use dialoguer::{
     console::Style,
@@ -15,7 +18,7 @@ use std::{
 pub fn set_language() -> Result<(), String> {
     println!("Configurando linguagem do sistema...");
 
-    let language_selected = get_user_selections();
+    let language_selected = get_user_selections(&LANGUAGES, "Selecione uma linguagem. Caso selecione so uma ISO ocasionara em error, selecione com a tecla 'espaço' uma linguagem e uma ISO!");
 
     if language_selected.len() < 1 {
         return Err("Selecione uma linguagem, nâo apenas uma ISO".to_string());
@@ -30,33 +33,6 @@ pub fn set_language() -> Result<(), String> {
 
     println!("Linguagem do sistema configurada com sucesso.");
     Ok(())
-}
-fn custom_theme() -> ColorfulTheme {
-    let mut theme = ColorfulTheme::default();
-
-    // Estilo para o item ativo (selecionado)
-    theme.active_item_style = Style::new().fg(console::Color::Cyan).bold();
-
-    // Estilo para o item inativo (não selecionado)
-    theme.inactive_item_style = Style::new().fg(console::Color::White);
-
-    theme
-}
-
-fn get_user_selections() -> Vec<String> {
-    let selections = MultiSelect::with_theme(&custom_theme())
-        .with_prompt("Selecione uma linguagem. Caso selecione so uma ISO ocasionara em error, selecione com a tecla 'espaço' uma linguagem e uma ISO!")
-        .items(&LANGUAGES)
-        .interact()
-        .unwrap();
-
-    let filtered_selections: Vec<String> = selections
-        .into_iter()
-        .filter(|&i| !LANGUAGES[i].contains("ISO"))
-        .map(|i| LANGUAGES[i].to_string())
-        .collect();
-
-    filtered_selections
 }
 
 fn edit_locale_gen(language: Vec<String>) -> Result<(), String> {
