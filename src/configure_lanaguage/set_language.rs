@@ -528,7 +528,7 @@ pub fn set_language() -> Result<(), String> {
 
 fn get_user_selections() -> Vec<String> {
     let selections = MultiSelect::with_theme(&ColorfulTheme::default())
-        .with_prompt("Selecione uma linguagem. Caso selecione so uma ISO ocasionara em error, selecione com a tecla 'espaço' uma linguagem e uma ISO!")
+        .with_prompt("Selecione uma linguagem. Caso selecione so uma ISO ocasionara em error, selecione com a tecla 'espaço' uma linguagem e uma ISO!\n")
         .items(&LANGUAGES)
         .interact()
         .unwrap();
