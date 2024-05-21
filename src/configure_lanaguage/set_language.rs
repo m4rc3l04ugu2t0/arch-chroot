@@ -502,14 +502,16 @@ const LANGUAGES: [&str; 489] = [
 ];
 pub fn set_language() -> Result<(), String> {
     println!("Configurando linguagem do sistema...");
+    println!("Nâo selecione so uma ISO da linguage, isso ocasionara um error, escolha a linguagem junto de uma isso caso queira.");
     println!("Selcione com espaço");
 
     let language_selected = get_user_selections();
-    println!("Você escolheu: ");
 
     if language_selected.len() < 1 {
-        return Err("set_language()".to_string());
+        return Err("Selecione uma linguagem, nâo apenas uma ISO".to_string());
     }
+
+    println!("Você escolheu: ");
 
     for selection in &language_selected {
         println!("{}", selection)
@@ -517,7 +519,8 @@ pub fn set_language() -> Result<(), String> {
 
     edit_locale_gen(language_selected.clone())?;
 
-    run_command(&mut Command::new("locale-gen"))?;
+    let output_command = run_command(&mut Command::new("locale-gen"))?;
+    println!("{:?}", output_command);
 
     configure_locale_conf(language_selected.clone())?;
 
