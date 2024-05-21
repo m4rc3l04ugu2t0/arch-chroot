@@ -279,6 +279,7 @@ name = "rustinstallarch"
 version = "0.1.0"
 dependencies = [
  "chrono-tz",
+ "console",
  "dialoguer",
  "nix",
  "serde",

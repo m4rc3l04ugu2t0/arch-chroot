@@ -1,13 +1,16 @@
 #![allow(unused)]
+use crate::run_commands::run_command;
+use console::style;
+use dialoguer::{
+    console::Style,
+    theme::{ColorfulTheme, Theme},
+    MultiSelect,
+};
 use std::{
     fs::{File, OpenOptions},
     io::{self, BufRead, BufReader, Write},
     process::Command,
 };
-
-use dialoguer::{theme::ColorfulTheme, MultiSelect, Select};
-
-use crate::run_commands::run_command;
 
 const LANGUAGES: [&str; 489] = [
     "aa_DJ.UTF-8 UTF-8",
@@ -518,6 +521,17 @@ pub fn set_language() -> Result<(), String> {
 
     println!("Linguagem do sistema configurada com sucesso.");
     Ok(())
+}
+fn custom_theme() -> ColorfulTheme {
+    let mut theme = ColorfulTheme::default();
+
+    // Estilo para o item ativo (selecionado)
+    theme.active_item_style = Style::new().fg(console::Color::Cyan).bold();
+
+    // Estilo para o item inativo (não selecionado)
+    theme.inactive_item_style = Style::new().fg(console::Color::White);
+
+    theme
 }
 
 fn get_user_selections() -> Vec<String> {
