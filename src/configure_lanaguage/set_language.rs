@@ -512,7 +512,7 @@ pub fn set_language() -> Result<(), String> {
     println!("Você escolheu: ");
 
     for selection in &language_selected {
-        println!("{}", selection)
+        println!("{}\n", selection)
     }
 
     edit_locale_gen(language_selected.clone())?;
