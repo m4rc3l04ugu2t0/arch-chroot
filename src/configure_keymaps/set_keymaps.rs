@@ -9,10 +9,12 @@ pub fn configure_keymaps() -> Result<(), String> {
     let keymap_selected = get_user_selections(&KEYMAPS, "Selecione o layout de taclado");
 
     for keymap in keymap_selected {
-        run_command(&mut Command::new(format!(
-            "echo KEYMAP={} >> /etc/vconsole.conf",
-            keymap
-        )))?;
+        run_command(
+            &mut Command::new("echo")
+                .arg(format!("KEYMAP={}", keymap))
+                .arg(">>")
+                .arg("/etc/vconsole.conf"),
+        )?;
     }
 
     Ok(())

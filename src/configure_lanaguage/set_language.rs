@@ -18,7 +18,10 @@ use std::{
 pub fn set_language() -> Result<(), String> {
     println!("Configurando linguagem do sistema...");
 
-    let language_selected = get_user_selections(&LANGUAGES, "Selecione uma linguagem. Caso selecione so uma ISO ocasionara em error, selecione com a tecla 'espaço' uma linguagem e uma ISO!");
+    let language_selected = get_user_selections(
+        &LANGUAGES,
+        "Selecione um linguagem, caso selecione apenas uma ISO gerera um error, selecione as duas",
+    );
 
     if language_selected.len() < 1 {
         return Err("Selecione uma linguagem, nâo apenas uma ISO".to_string());
