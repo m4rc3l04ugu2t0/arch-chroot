@@ -507,6 +507,10 @@ pub fn set_language() -> Result<(), String> {
     let language_selected = get_user_selections();
     println!("Você escolheu: ");
 
+    if language_selected.len() < 1 {
+        return Err("set_language()".to_string());
+    }
+
     for selection in &language_selected {
         println!("{}", selection)
     }
@@ -533,10 +537,6 @@ fn get_user_selections() -> Vec<String> {
         .filter(|&i| !LANGUAGES[i].contains("ISO"))
         .map(|i| LANGUAGES[i].to_string())
         .collect();
-
-    if filtered_selections.len() < 1 {
-        get_user_selections();
-    }
 
     filtered_selections
 }
