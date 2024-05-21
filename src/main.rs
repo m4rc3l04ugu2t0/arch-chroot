@@ -9,6 +9,7 @@ mod config_timezone;
 mod configure_hostname;
 mod configure_keymaps;
 mod configure_lanaguage;
+mod configure_root;
 mod configure_system;
 mod functions;
 mod run_commands;
