@@ -518,7 +518,7 @@ pub fn set_language() -> Result<(), String> {
     edit_locale_gen(language_selected.clone())?;
 
     let output_command = run_command(&mut Command::new("locale-gen"))?;
-    println!("{:#?}", output_command.stdout);
+    println!("{:#?}", output_command);
 
     configure_locale_conf(language_selected.clone())?;
 
@@ -528,8 +528,7 @@ pub fn set_language() -> Result<(), String> {
 
 fn get_user_selections() -> Vec<String> {
     let selections = MultiSelect::with_theme(&ColorfulTheme::default())
-        .with_prompt("Selecione uma linguagem. Caso selecione so uma ISO ocasionara em error, selecione com a tecla 'espaço' uma linguagem e uma ISO!
-    ")
+        .with_prompt("Selecione uma linguagem. Caso selecione so uma ISO ocasionara em error, selecione com a tecla 'espaço' uma linguagem e uma ISO!")
         .items(&LANGUAGES)
         .interact()
         .unwrap();
