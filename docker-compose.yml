@@ -1,8 +1,10 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
-    image: $DOCKER_HUB_USERNAME/rustinstallarch:latest
-    container_name: arch_installer
+  rustinstallarch:
+    image: your-dockerhub-username/rustinstallarch:latest
+    build:
+      context: .
+    container_name: rustinstallarch
+    restart: always
     command: ["./target/release/rustinstallarch"]
