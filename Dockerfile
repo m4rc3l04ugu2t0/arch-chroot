@@ -1,33 +1,28 @@
-# Use a imagem base do Arch Linux
+# Use the official Arch Linux base image
 FROM archlinux:latest
 
-# Instale dependências básicas e Rust
-RUN pacman -Syu --noconfirm && \
-    pacman -S --noconfirm base-devel rustup
+# Update the package database and install required packages
+RUN pacman -Syu --noconfirm \
+    && pacman -S --noconfirm base-devel
 
-# Instale a toolchain do Rust
-RUN rustup default stable
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 
-# Crie um diretório para o aplicativo
+# Create a new directory for our application
 WORKDIR /usr/src/rustinstallarch
 
-# Copie os arquivos Cargo.toml e Cargo.lock
+# Copy the Cargo.toml and Cargo.lock files
 COPY Cargo.toml Cargo.lock ./
 
-# Crie um diretório src e adicione um arquivo main.rs para evitar erros durante o cargo fetch
-RUN mkdir src && echo "fn main() {}" > src/main.rs
-
-# Baixe as dependências
+# Pre-fetch the dependencies
 RUN cargo fetch
 
-# Remova o diretório src temporário
-RUN rm -rf src
-
-# Copie o restante do código
+# Copy the source code
 COPY . .
 
-# Compile o projeto
+# Build the application
 RUN cargo build --release
 
-# Execute o aplicativo
+# Define the entrypoint of the container
 CMD ["./target/release/rustinstallarch"]
