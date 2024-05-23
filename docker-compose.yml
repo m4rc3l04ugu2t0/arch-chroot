@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   rustinstallarch:
-    image: your-dockerhub-username/rustinstallarch:latest
+    image: m4c3l0/rustinstallarch:latest
     build:
       context: .
     container_name: rustinstallarch
