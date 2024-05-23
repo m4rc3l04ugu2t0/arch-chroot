@@ -111,7 +111,7 @@ mod tests {
             .expect_call()
             .with(eq("mock_password"))
             .times(1)
-            .returning(|_| Err("Error running command".to_string()));
+            .returning(|_| Ok(()));
 
         let result = set_root(|| mock_reader.call(), |pwd| mock_command_runner.call(pwd));
         assert!(result.is_err());
