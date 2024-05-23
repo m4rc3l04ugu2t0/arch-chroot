@@ -3,5 +3,6 @@ version: '3.8'
 services:
   app:
     build: .
+    image: $DOCKER_HUB_USERNAME/rustinstallarch:latest
     container_name: arch_installer
     command: ["./target/release/rustinstallarch"]

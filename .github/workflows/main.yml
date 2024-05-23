@@ -1,4 +1,4 @@
-name: CI/CD Tust Arch Install 
+name: CI/CD Rust Arch Install 
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -47,15 +48,23 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.docker-cache
+        key: ${{ runner.os }}-docker-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-docker-
+
     - name: Log in to Docker Hub
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: |
-        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+      run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 
     - name: Build Docker image
-      run: docker build . -t ${{ secrets.DOCKER_USERNAME }}/rustinstallarch:latest
+      run: |
+        DOCKER_BUILDKIT=1 docker build --cache-from=type=local,src=/tmp/.docker-cache --cache-to=type=local,dest=/tmp/.docker-cache,mode=max . -t ${{ secrets.DOCKER_USERNAME }}/rustinstallarch:latest
 
     - name: Push Docker image
       run: docker push ${{ secrets.DOCKER_USERNAME }}/rustinstallarch:latest
