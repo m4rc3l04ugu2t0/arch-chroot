@@ -4,7 +4,7 @@ WORKDIR /usr/src/myapp
 
 COPY Cargo.toml Cargo.lock ./
 
-RUN cargo fetch
+RUN cargo build 
 
 COPY . .
 
