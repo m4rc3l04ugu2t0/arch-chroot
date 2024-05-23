@@ -1,7 +1,9 @@
 use std::{
-    io::{stdin, Write},
+    io::Write,
     process::{Command, Stdio},
 };
+
+use rpassword::read_password;
 
 fn set_root<T: Fn() -> Result<String, String>, C: Fn(&str) -> Result<(), String>>(
     read_password: T,
@@ -15,11 +17,8 @@ fn set_root<T: Fn() -> Result<String, String>, C: Fn(&str) -> Result<(), String>
     Ok(())
 }
 
-fn read_password() -> Result<String, String> {
-    let mut password = String::new();
-    stdin()
-        .read_line(&mut password)
-        .map_err(|e| e.to_string())?;
+fn read_password_user() -> Result<String, String> {
+    let password = read_password().map_err(|err| format!("Error: {}", err))?;
     Ok(password.trim().to_string())
 }
 
@@ -51,7 +50,7 @@ fn run_passwd_command(password: &str) -> Result<(), String> {
 }
 
 pub fn set_root_default() -> Result<(), String> {
-    set_root(read_password, run_passwd_command)?;
+    set_root(read_password_user, run_passwd_command)?;
     Ok(())
 }
 
