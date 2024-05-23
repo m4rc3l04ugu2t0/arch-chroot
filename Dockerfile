@@ -1,20 +1,33 @@
-# Use a imagem oficial do Rust como base
-FROM rust:latest
+# Use a imagem base do Arch Linux
+FROM archlinux:latest
 
-# Crie um diretório de trabalho dentro do container
+# Instale dependências básicas e Rust
+RUN pacman -Syu --noconfirm && \
+    pacman -S --noconfirm base-devel rustup
+
+# Instale a toolchain do Rust
+RUN rustup default stable
+
+# Crie um diretório para o aplicativo
 WORKDIR /usr/src/rustinstallarch
 
-# Copie o arquivo Cargo.toml e o arquivo Cargo.lock para o diretório de trabalho
+# Copie os arquivos Cargo.toml e Cargo.lock
 COPY Cargo.toml Cargo.lock ./
+
+# Crie um diretório src e adicione um arquivo main.rs para evitar erros durante o cargo fetch
+RUN mkdir src && echo "fn main() {}" > src/main.rs
 
 # Baixe as dependências
 RUN cargo fetch
 
-# Copie o restante do código fonte
+# Remova o diretório src temporário
+RUN rm -rf src
+
+# Copie o restante do código
 COPY . .
 
-# Compile o código
+# Compile o projeto
 RUN cargo build --release
 
-# Defina o comando padrão para executar o binário resultante
+# Execute o aplicativo
 CMD ["./target/release/rustinstallarch"]
