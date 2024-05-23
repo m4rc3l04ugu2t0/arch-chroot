@@ -1,13 +1,20 @@
+# Use a imagem oficial do Rust como base
 FROM rust:latest
 
-WORKDIR /usr/src/myapp
+# Crie um diretório de trabalho dentro do container
+WORKDIR /usr/src/rustinstallarch
 
+# Copie o arquivo Cargo.toml e o arquivo Cargo.lock para o diretório de trabalho
 COPY Cargo.toml Cargo.lock ./
 
-RUN cargo build 
+# Baixe as dependências
+RUN cargo fetch
 
+# Copie o restante do código fonte
 COPY . .
 
+# Compile o código
 RUN cargo build --release
 
-CMD [ "./target/release/rustinstallarch" ]
+# Defina o comando padrão para executar o binário resultante
+CMD ["./target/release/rustinstallarch"]
