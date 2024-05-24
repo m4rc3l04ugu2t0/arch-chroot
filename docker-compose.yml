@@ -1,8 +1,7 @@
 services:
   rustinstallarch:
     image: m4c3l0/rustinstallarch:latest
-    build:
-      context: .
     container_name: rustinstallarch
-    restart: always
-    command: ["./target/release/rustinstallarch"]
+    stdin_open: true
+    tty: true
+    command: ["bash"]
