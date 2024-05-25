@@ -67,7 +67,7 @@ jobs:
       env:
         DOCKER_BUILDKIT: 1
       run: |
-        docker build . -t ${{ secrets.DOCKER_USERNAME }}/rustinstallarch:latest
+        docker build . -t ${{ secrets.DOCKER_USERNAME }}/rustinstallarch:dev
 
     - name: Push Docker image
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/rustinstallarch:latest
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/rustinstallarch:dev
