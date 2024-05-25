@@ -1,4 +1,4 @@
-name: CI/CD Rust Arch Install
+name: CI/CD Rust Arch Install Dev
 
 on:
   push:
