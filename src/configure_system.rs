@@ -1,6 +1,4 @@
-#![allow(unused)]
 use crate::{
-    conf_sys::config_system,
     config_timezone::set_timezone::set_timezone,
     configure_hostname::set_hostname::set_hostname,
     configure_keymaps::set_keymaps::set_keymaps,
@@ -9,14 +7,14 @@ use crate::{
     run_commands::{correct_errror, is_correctable_error},
 };
 use serde::{Deserialize, Serialize};
+use serde_json::{from_reader, to_writer};
 use std::{
     fs::{self, OpenOptions},
-    io::{BufReader, Read},
+    io::BufReader,
     path::Path,
-    process::exit,
 };
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 struct State {
     step: usize,
 }
@@ -65,11 +63,11 @@ pub fn configure() -> Result<(), String> {
 }
 
 fn load_state() -> Result<State, String> {
-    let state_file = "state.json";
+    let state_file = "src/state.json";
     if let Ok(file) = OpenOptions::new().read(true).open(state_file) {
         let reader = BufReader::new(file);
         let state: State =
-            serde_json::from_reader(reader).map_err(|e| format!("Falha ao ler estado: {}", e))?;
+            from_reader(reader).map_err(|e| format!("Falha ao ler estado: {}", e))?;
         Ok(state)
     } else {
         Ok(State { step: 0 })
@@ -77,21 +75,39 @@ fn load_state() -> Result<State, String> {
 }
 
 fn save_state(state: &State) -> Result<(), String> {
-    let state_file = "./state.json";
+    let state_file = "src/state.json";
 
-    let state_dir = Path::new(state_file).parent().unwrap();
+    let state_dir = Path::new(state_file).parent().expect("Error dictory");
 
-    // if !state_dir.exists() {
-    //     fs::create_dir(state_dir)
-    //         .map_err(|e| format!("Falha ao criar diretório {}: {}", state_dir.display(), e))?;
-    // }
+    if !state_dir.exists() {
+        fs::create_dir_all(state_dir)
+            .map_err(|e| format!("Falha ao criar diretório {}: {}", state_dir.display(), e))?;
+    }
 
     let file = OpenOptions::new()
         .write(true)
         .truncate(true)
+        .create(true)
         .open(state_file)
         .map_err(|e| format!("Falha ao salvar estado: {}", e))?;
-    serde_json::to_writer(file, state).map_err(|e| format!("Falha ao salvar estado: {}", e))?;
+    to_writer(file, state).map_err(|e| format!("Falha ao salvar estado: {}", e))?;
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test_system {
+    use super::*;
+
+    #[test]
+    fn test_save_state_valid() {
+        let state = save_state(&State { step: 0 });
+        assert_eq!(Ok(()), state);
+    }
+
+    #[test]
+    fn test_load_state_valid() {
+        let state = load_state();
+        assert_eq!(Ok(State { step: 0 }), state);
+    }
 }

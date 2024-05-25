@@ -5,3 +5,4 @@ services:
     stdin_open: true
     tty: true
     command: ["bash"]
+    pull_policy: always
