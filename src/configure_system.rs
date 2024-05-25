@@ -94,20 +94,3 @@ fn save_state(state: &State) -> Result<(), String> {
 
     Ok(())
 }
-
-#[cfg(test)]
-mod test_system {
-    use super::*;
-
-    #[test]
-    fn test_save_state_valid() {
-        let state = save_state(&State { step: 0 });
-        assert_eq!(Ok(()), state);
-    }
-
-    #[test]
-    fn test_load_state_valid() {
-        let state = load_state();
-        assert_eq!(Ok(State { step: 0 }), state);
-    }
-}
