@@ -20,7 +20,7 @@ pub fn set_new_user() -> Result<(), String> {
             .arg("wheel,video,audio,kvm")
             .arg("-s")
             .arg("/bin/bash")
-            .arg(username.trim()),
+            .arg(&username),
     )?;
     println!("User adicionado com sucesso!");
     set_password_user(&username)?;
@@ -46,6 +46,8 @@ fn get_input_user(text: &str) -> Result<String, String> {
     stdin()
         .read_line(&mut input)
         .map_err(|err| format!("Error function get_input_user: {}", err))?;
+
+    let input = input.trim().to_owned();
 
     Ok(input)
 }
