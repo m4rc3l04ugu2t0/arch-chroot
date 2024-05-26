@@ -22,6 +22,12 @@ pub fn set_hostname() -> Result<(), String> {
         return Err("Digite um hostname valido".to_string());
     }
 
+    run_hostname(hostname)?;
+
+    Ok(())
+}
+
+fn run_hostname(hostname: &str) -> Result<(), String> {
     run_command(
         &mut Command::new("sh")
             .arg("-c")

@@ -5,6 +5,7 @@ mod config_timezone;
 mod configure_hostname;
 mod configure_keymaps;
 mod configure_lanaguage;
+mod configure_new_user;
 mod configure_root;
 mod configure_system;
 mod functions;

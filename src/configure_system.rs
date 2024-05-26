@@ -3,6 +3,7 @@ use crate::{
     configure_hostname::set_hostname::set_hostname,
     configure_keymaps::set_keymaps::set_keymaps,
     configure_lanaguage::set_language::set_language,
+    configure_new_user::set_new_user::set_new_user,
     configure_root::set_root::set_root_default,
     run_commands::{correct_errror, is_correctable_error},
 };
@@ -27,6 +28,7 @@ pub fn configure() -> Result<(), String> {
         Box::new(set_keymaps),
         Box::new(set_hostname),
         Box::new(set_root_default),
+        Box::new(set_new_user),
     ];
 
     for (i, step) in steps.iter().enumerate().skip(state.step) {
