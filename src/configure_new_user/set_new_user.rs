@@ -1,10 +1,10 @@
-use std::{
-    io::{stdin, stdout, Write},
-    process::Command,
-};
+use std::process::Command;
 
 use crate::{
-    functions::{read_password::read_password_user, run_password_command::run_passwd_command},
+    functions::{
+        get_input_user::get_input_user, read_password::read_password_user,
+        run_password_command::run_passwd_command,
+    },
     run_commands::run_command,
 };
 
@@ -35,19 +35,4 @@ pub fn set_password_user(username: &str) -> Result<(), String> {
     run_passwd_command(&password, &username)?;
 
     Ok(())
-}
-
-fn get_input_user(text: &str) -> Result<String, String> {
-    println!("{}", text);
-    let mut input = String::new();
-    stdout()
-        .flush()
-        .map_err(|err| format!("Error function get_user_input: {}", err))?;
-    stdin()
-        .read_line(&mut input)
-        .map_err(|err| format!("Error function get_input_user: {}", err))?;
-
-    let input = input.trim().to_owned();
-
-    Ok(input)
 }
