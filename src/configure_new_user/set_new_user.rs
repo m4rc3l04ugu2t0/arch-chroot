@@ -9,7 +9,7 @@ use crate::{
 };
 
 pub fn set_new_user() -> Result<(), String> {
-    let user_name = get_input_user("Digite seu nome de usuario:")?;
+    let username = get_input_user("Digite seu nome de usuario:")?;
 
     run_command(
         Command::new("useradd")
@@ -20,14 +20,20 @@ pub fn set_new_user() -> Result<(), String> {
             .arg("wheel,video,audio,kvm")
             .arg("-s")
             .arg("/bin/bash")
-            .arg(user_name.trim()),
+            .arg(username.trim()),
     )?;
-
-    let password = read_password_user()?;
-
-    run_passwd_command(&password, &user_name)?;
-
     println!("User adicionado com sucesso!");
+    set_password_user(&username)?;
+    Ok(())
+}
+
+pub fn set_password_user(username: &str) -> Result<(), String> {
+    let password = read_password_user().map_err(|err| format!("Error: {}", err))?;
+
+    println!("Digite sua senha");
+
+    run_passwd_command(&password, &username)?;
+
     Ok(())
 }
 
