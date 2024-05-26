@@ -1,46 +1,32 @@
-use std::{
-    io::Write,
-    process::{Command, Stdio},
-};
+use rpassword::read_password;
 
-use crate::functions::read_password::read_password_user;
+use crate::functions::run_password_command::run_passwd_command;
 
-fn set_root<T: Fn() -> Result<String, String>, C: Fn(&str) -> Result<(), String>>(
+fn set_root<T: Fn() -> Result<String, String>, C: Fn(&str, &str) -> Result<(), String>>(
     read_password: T,
     run_command: C,
 ) -> Result<(), String> {
     println!("Digite a nova senha para o usuário root:");
 
     let password = read_password().map_err(|err| format!("Error: {}", err))?;
-    run_command(&password)?;
+    run_command(&password, "root")?;
 
     Ok(())
 }
 
-fn run_passwd_command(password: &str) -> Result<(), String> {
-    let mut child = Command::new("passwd")
-        .arg("root")
-        .stdin(Stdio::piped())
-        .spawn()
-        .map_err(|err| format!("Error: {}", err))?;
+fn read_password_user() -> Result<String, String> {
+    let password = read_password().map_err(|err| format!("Error: {}", err))?;
+    println!("Novamente");
+    let check_password = read_password().map_err(|err| format!("Error: {}", err))?;
 
-    if let Some(stdin) = &mut child.stdin {
-        writeln!(stdin, "{}", password)
-            .map_err(|e| format!("Falha ao escrever no stdin. Error: {}", e))?;
-        writeln!(stdin, "{}", password)
-            .map_err(|e| format!("Falha ao escrever no stdin. Error: {}", e))?;
-    }
-
-    let output = child
-        .wait_with_output()
-        .map_err(|err| format!("Error: {}", err))?;
-
-    if output.status.success() {
-        println!("Senha do root foi alterada com sucesso.");
-        Ok(())
+    if password
+        .to_ascii_lowercase()
+        .trim()
+        .eq(check_password.to_ascii_lowercase().trim())
+    {
+        Ok(password.trim().to_string())
     } else {
-        eprintln!("Falha ao alterar a senha do root.");
-        Err("Falha ao alterar a senha do root.".into())
+        Err("As senhas nao conferem".into())
     }
 }
 
@@ -62,7 +48,7 @@ mod tests {
 
     mock! {
         pub CommandRunner {
-            fn call(&self, password: &str) -> Result<(), String>;
+            fn call(&self, password: &str, user_name: &str) -> Result<(), String>;
         }
     }
 
@@ -76,7 +62,10 @@ mod tests {
             .times(1)
             .returning(|| Err("Error reading password".to_string()));
 
-        let result = set_root(|| mock_reader.call(), |pwd| mock_command_runner.call(pwd));
+        let result = set_root(
+            || mock_reader.call(),
+            |pwd, usr| mock_command_runner.call(pwd, usr),
+        );
         assert!(result.is_err());
         assert_eq!(result.err().unwrap(), "Error: Error reading password");
     }
@@ -93,11 +82,14 @@ mod tests {
 
         mock_command_runner
             .expect_call()
-            .with(eq("mock_password"))
+            .with(eq("mock_password"), eq("mock_username"))
             .times(1)
-            .returning(|_| Err("Error running command".to_string()));
+            .returning(|_, _| Err("Error running command".to_string()));
 
-        let result = set_root(|| mock_reader.call(), |pwd| mock_command_runner.call(pwd));
+        let result = set_root(
+            || mock_reader.call(),
+            |pwd, usr| mock_command_runner.call(pwd, usr),
+        );
         assert!(result.is_err());
         assert_eq!(result.err().unwrap(), "Error running command");
     }
@@ -114,11 +106,14 @@ mod tests {
 
         mock_command_runner
             .expect_call()
-            .with(eq("mock_password"))
+            .with(eq("mock_password"), eq("mock_username"))
             .times(1)
-            .returning(|_| Ok(()));
+            .returning(|_, _| Ok(()));
 
-        let result = set_root(|| mock_reader.call(), |pwd| mock_command_runner.call(pwd));
+        let result = set_root(
+            || mock_reader.call(),
+            |pwd, usr| mock_command_runner.call(pwd, usr),
+        );
         assert!(result.is_ok());
     }
 }

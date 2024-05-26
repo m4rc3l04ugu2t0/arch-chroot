@@ -3,7 +3,10 @@ use std::{
     process::Command,
 };
 
-use crate::run_commands::run_command;
+use crate::{
+    functions::{read_password::read_password_user, run_password_command::run_passwd_command},
+    run_commands::run_command,
+};
 
 pub fn set_new_user() -> Result<(), String> {
     let user_name = get_input_user("Digite seu nome de usuario:")?;
@@ -17,8 +20,12 @@ pub fn set_new_user() -> Result<(), String> {
             .arg("wheel,video,audio,kvm")
             .arg("-s")
             .arg("/bin/bash")
-            .arg(user_name),
+            .arg(user_name.trim()),
     )?;
+
+    let password = read_password_user()?;
+
+    run_passwd_command(&password, &user_name)?;
 
     println!("User adicionado com sucesso!");
     Ok(())
