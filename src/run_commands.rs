@@ -69,19 +69,8 @@ mod test_run_command {
 
     #[test]
     fn test_run_command_invalid() {
-        // let result = run_command(&mut Command::new("lssssss").arg("-a"));
-        let user_name = "celo";
+        let result = run_command(&mut Command::new("lssssss").arg("-a"));
 
-        let result = run_command(&mut Command::new("useradd").args(vec![
-            "-m",
-            "-g",
-            "users",
-            "-G",
-            "wheel,video,audio,kvm",
-            "-s",
-            "/bin/bash",
-            user_name,
-        ]));
         assert_eq!(
             Err("Falha ao executar comando: No such file or directory (os error 2)".to_string()),
             result
