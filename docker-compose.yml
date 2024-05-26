@@ -1,6 +1,6 @@
 services:
   rustinstallarch:
-    image: m4c3l0/rustinstallarch:release
+    image: m4c3l0/rustinstallarch:dev
     container_name: rustinstallarch
     stdin_open: true
     tty: true
