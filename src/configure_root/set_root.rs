@@ -26,7 +26,7 @@ fn read_password_user() -> Result<String, String> {
     {
         Ok(password.trim().to_string())
     } else {
-        Err("As senhas nao conferem".into())
+        Err("As senhas não conferem".into())
     }
 }
 
@@ -82,7 +82,7 @@ mod tests {
 
         mock_command_runner
             .expect_call()
-            .with(eq("mock_password"), eq("mock_username"))
+            .with(eq("mock_password"), eq("root"))
             .times(1)
             .returning(|_, _| Err("Error running command".to_string()));
 
@@ -106,7 +106,7 @@ mod tests {
 
         mock_command_runner
             .expect_call()
-            .with(eq("mock_password"), eq("mock_username"))
+            .with(eq("mock_password"), eq("root"))
             .times(1)
             .returning(|_, _| Ok(()));
 
