@@ -8,10 +8,17 @@ use crate::run_commands::run_command;
 pub fn set_new_user() -> Result<(), String> {
     let user_name = get_input_user("Digite seu nome de usuario:")?;
 
-    run_command(&mut Command::new("useradd").arg(format!(
-        "-m -g users -G wheel,video,audio,kvm -s /bin/bash {}",
-        user_name
-    )))?;
+    run_command(
+        Command::new("useradd")
+            .arg("-m")
+            .arg("-g")
+            .arg("users")
+            .arg("-G")
+            .arg("wheel,video,audio,kvm")
+            .arg("-s")
+            .arg("/bin/bash")
+            .arg(user_name),
+    )?;
 
     println!("User adicionado com sucesso!");
     Ok(())

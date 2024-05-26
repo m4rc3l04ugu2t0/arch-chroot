@@ -3,7 +3,7 @@ use std::{
     process::{Command, Stdio},
 };
 
-use rpassword::read_password;
+use crate::functions::read_password::read_password_user;
 
 fn set_root<T: Fn() -> Result<String, String>, C: Fn(&str) -> Result<(), String>>(
     read_password: T,
@@ -15,22 +15,6 @@ fn set_root<T: Fn() -> Result<String, String>, C: Fn(&str) -> Result<(), String>
     run_command(&password)?;
 
     Ok(())
-}
-
-fn read_password_user() -> Result<String, String> {
-    let password = read_password().map_err(|err| format!("Error: {}", err))?;
-    println!("Novamente");
-    let check_password = read_password().map_err(|err| format!("Error: {}", err))?;
-
-    if password
-        .to_ascii_lowercase()
-        .trim()
-        .eq(check_password.to_ascii_lowercase().trim())
-    {
-        Ok(password.trim().to_string())
-    } else {
-        Err("As senhas nao conferem".into())
-    }
 }
 
 fn run_passwd_command(password: &str) -> Result<(), String> {
