@@ -1,6 +1,3 @@
-Para adicionar o guia de instalação formatado em HTML ao seu arquivo `README.md` no GitHub, você precisará converter o HTML para Markdown, pois o GitHub renderiza Markdown diretamente. Aqui está uma conversão aproximada do seu guia para Markdown:
-
-```markdown
 # Guia de Instalação do Arch Linux
 
 Este guia fornece instruções detalhadas para a instalação do Arch Linux, incluindo configuração do teclado, conexão Wi-Fi, particionamento de disco, montagem de sistemas de arquivos e instalação de pacotes essenciais.
