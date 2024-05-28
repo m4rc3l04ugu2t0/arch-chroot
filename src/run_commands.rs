@@ -48,8 +48,6 @@ pub fn correct_errror(stderr: &str) -> Result<(), String> {
 }
 
 fn extract_missing_dependency(stderr: &str) -> Option<&str> {
-    // Extraia o nome da dependência faltante do stderr
-    // Exemplo simples, ajuste conforme necessário
     stderr
         .split_whitespace()
         .find(|&word| word == "dependência")

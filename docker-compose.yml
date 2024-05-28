@@ -1,7 +1,8 @@
 services:
   rustinstallarch:
-    image: m4c3l0/rustinstallarch:latest
+    image: m4c3l0/rustinstallarch:dev
     container_name: rustinstallarch
     stdin_open: true
     tty: true
-    command: ["bash"]
+    entrypoint: ["bash"]
+    pull_policy: always

@@ -5,6 +5,7 @@ FROM archlinux:latest
 RUN pacman -Syu --noconfirm \
     && pacman -S --noconfirm base-devel curl \
     && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
+    && pacman -S vim --noconfirm \
     && pacman -Scc --noconfirm  # Clean up the package cache
 
 # Set the PATH environment variable for Rust
