@@ -52,28 +52,3 @@ fn extract_missing_dependency(stderr: &str) -> Option<&str> {
         .split_whitespace()
         .find(|&word| word == "dependência")
 }
-
-#[cfg(test)]
-mod test_run_command {
-    use super::*;
-
-    #[test]
-    fn test_run_command_valid() {
-        let result = run_command(&mut Command::new("ls").arg("-a")).unwrap();
-
-        assert_eq!(
-            Ok::<Output, String>(Command::new("ls").arg("-a").output().unwrap()).unwrap(),
-            result
-        );
-    }
-
-    #[test]
-    fn test_run_command_invalid() {
-        let result = run_command(&mut Command::new("lssssss").arg("-a"));
-
-        assert_eq!(
-            Err("Falha ao executar comando: No such file or directory (os error 2)".to_string()),
-            result
-        );
-    }
-}

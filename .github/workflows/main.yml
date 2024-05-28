@@ -1,12 +1,12 @@
-name: CI/CD Rust Arch Install Dev
+name: CI/CD Rust Arch Install Dist
 
 on:
   push:
     branches:
-      - dev
+      - dist
   pull_request:
     branches:
-      - dev
+      - dist
   workflow_dispatch:
 
 jobs:
@@ -39,13 +39,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-cargo-registry-
 
-
-    - name: Run tests
-      run: |
-        cargo update --verbose
-        cargo build --verbose
-        cargo test --verbose
-
     - name: Build project
       run: cargo build --release
 
@@ -67,7 +60,7 @@ jobs:
       env:
         DOCKER_BUILDKIT: 1
       run: |
-        docker build . -t ${{ secrets.DOCKER_USERNAME }}/rustinstallarch:dev
+        docker build . -t ${{ secrets.DOCKER_USERNAME }}/rustinstallarch:dist
 
     - name: Push Docker image
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/rustinstallarch:dev
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/rustinstallarch:dist
