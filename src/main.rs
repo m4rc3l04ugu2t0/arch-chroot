@@ -14,8 +14,8 @@ mod run_commands;
 
 fn main() {
     if let Err(err) = configure() {
-        eprintln!("Erro na configuração do sistema: {}", err);
+        eprintln!("Failed to configure the system: {}", err);
     } else {
-        println!("Configuração do sistema concluída com sucesso.");
+        println!("System configured successfully.");
     }
 }

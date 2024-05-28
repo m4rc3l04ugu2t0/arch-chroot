@@ -26,7 +26,8 @@ pub fn install_assentials() -> Result<(), String> {
     run_command(
         &mut Command::new("pacman")
             .arg("-S")
-            .arg("grub efibootmgr")
+            .arg("grub")
+            .arg("efibootmgr")
             .arg("--noconfirm"),
     )?;
 

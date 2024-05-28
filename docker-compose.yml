@@ -4,5 +4,5 @@ services:
     container_name: rustinstallarch
     stdin_open: true
     tty: true
-    command: ["bash"]
+    entrypoint: ["bash"]
     pull_policy: always
