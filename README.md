@@ -1,3 +1,50 @@
+# Guia de Instalação do Arch Linux
+
+Este guia fornece instruções detalhadas para a instalação do Arch Linux, incluindo configuração do teclado, conexão Wi-Fi, particionamento de disco, montagem de sistemas de arquivos e instalação de pacotes essenciais.
+
+## 1. Configurar o Teclado
+
+```bash
+loadkeys br-abnt2
+# Carrega o layout do teclado brasileiro ABNT2.
+```
+
+## 2. Conectar ao Wi-Fi
+
+```bash
+rfkill unblock all
+# Desbloqueia todos os dispositivos de rádio (Wi-Fi, Bluetooth, etc.).
+
+iwctl station list
+# Lista todas as interfaces de estação Wi-Fi.
+
+iwctl
+# Inicia a ferramenta de linha de comando do iwd.
+
+# Dentro do iwctl:
+station list
+# Lista todas as interfaces de estação Wi-Fi.
+
+station wlan0 get-networks
+# Lista todas as redes disponíveis para a interface wlan0.
+
+station wlan0 connect nome-da-rede
+# Conecta à rede especificada.
+```
+
+## 3. Atualizar o Relógio do Sistema
+
+```bash
+timedatectl set-ntp true
+# Habilita a sincronização automática do tempo via NTP.
+```
+
+## 4. Particionar o Disco
+
+```bash
+fdisk /dev/nvme0n1
+# Utilitário de partição de disco para o disco NVMe.
+
 # Seta o teclado
 loadkeys br-abnt2
 # loadkeys: Comando para carregar o layout do teclado.
@@ -39,289 +86,195 @@ fdisk /dev/nvme0n1
 # - /dev/nvme0n1p1: Partição EFI, 512 MB
 # - /dev/nvme0n1p2: Partição Btrfs, restante do espaço
 
-# Formatar as partições
+```
+
+## 5. Formatar as Partições
+
+```bash
 mkfs.fat -F32 /dev/nvme0n1p1
-# mkfs.fat: Cria um sistema de arquivos FAT.
-# -F32: Especifica o formato FAT32.
-# /dev/nvme0n1p1: Partição EFI.
+# Cria um sistema de arquivos FAT32 na partição EFI.
 
 mkfs.btrfs /dev/nvme0n1p2
-# mkfs.btrfs: Cria um sistema de arquivos Btrfs.
-# /dev/nvme0n1p2: Partição Btrfs.
+# Cria um sistema de arquivos Btrfs na segunda partição.
+```
 
-# Montar a partição Btrfs temporariamente para criar subvolumes
+## 6. Criar Subvolumes Btrfs
+
+```bash
 mount /dev/nvme0n1p2 /mnt
-# mount: Monta um sistema de arquivos.
-# /dev/nvme0n1p2: Partição a ser montada.
-# /mnt: Ponto de montagem.
+# Monta a partição Btrfs temporariamente.
 
-# Criar subvolumes Btrfs
 btrfs su cr /mnt/@
-# btrfs su cr: Cria um subvolume.
-# /mnt/@: Subvolume para root.
+# Cria um subvolume para root.
 
 btrfs su cr /mnt/@home
-# /mnt/@home: Subvolume para home.
+# Cria um subvolume para home.
 
 btrfs su cr /mnt/@snapshots
-# /mnt/@snapshots: Subvolume para snapshots.
+# Cria um subvolume para snapshots.
 
 btrfs su cr /mnt/@var_log
-# /mnt/@var_log: Subvolume para /var/log.
+# Cria um subvolume para /var/log.
 
 btrfs su cr /mnt/@var_cache_pacman
-# /mnt/@var_cache_pacman: Subvolume para /var/cache/pacman/pkg.
+# Cria um subvolume para /var/cache/pacman/pkg.
 
-# Desmontar a partição temporária
 umount /mnt
-# umount: Desmonta um sistema de arquivos.
-# /mnt: Ponto de montagem a ser desmontado.
+# Desmonta a partição temporariamente.
+```
 
-# Montar os subvolumes corretamente
+## 7. Montar os Subvolumes
+
+```bash
 mount -o subvol=@ /dev/nvme0n1p2 /mnt
-# mount: Monta um sistema de arquivos.
-# -o subvol=@: Especifica o subvolume a ser montado.
-# /dev/nvme0n1p2: Partição a ser montada.
-# /mnt: Ponto de montagem.
+# Monta o subvolume root.
 
 mkdir /mnt/{boot,home,.snapshots,var/log,var/cache/pacman/pkg}
-# mkdir: Cria diretórios.
-# /mnt/{boot,home,.snapshots,var/log,var/cache/pacman/pkg}: Diretórios a serem criados.
+# Cria os diretórios necessários.
 
 mount /dev/nvme0n1p1 /mnt/boot
-# mount: Monta um sistema de arquivos.
-# /dev/nvme0n1p1: Partição a ser montada.
-# /mnt/boot: Ponto de montagem da partição EFI.
+# Monta a partição EFI.
 
 mount -o subvol=@home /dev/nvme0n1p2 /mnt/home
-# mount: Monta um sistema de arquivos.
-# -o subvol=@home: Especifica o subvolume a ser montado.
-# /dev/nvme0n1p2: Partição a ser montada.
-# /mnt/home: Ponto de montagem do subvolume home.
+# Monta o subvolume home.
 
 mount -o subvol=@snapshots /dev/nvme0n1p2 /mnt/.snapshots
-# mount: Monta um sistema de arquivos.
-# -o subvol=@snapshots: Especifica o subvolume a ser montado.
-# /dev/nvme0n1p2: Partição a ser montada.
-# /mnt/.snapshots: Ponto de montagem do subvolume snapshots.
+# Monta o subvolume snapshots.
 
 mount -o subvol=@var_log /dev/nvme0n1p2 /mnt/var/log
-# mount: Monta um sistema de arquivos.
-# -o subvol=@var_log: Especifica o subvolume a ser montado.
-# /dev/nvme0n1p2: Partição a ser montada.
-# /mnt/var/log: Ponto de montagem do subvolume var_log.
+# Monta o subvolume var_log.
 
 mount -o subvol=@var_cache_pacman /dev/nvme0n1p2 /mnt/var/cache/pacman/pkg
-# mount: Monta um sistema de arquivos.
-# -o subvol=@var_cache_pacman: Especifica o subvolume a ser montado.
-# /dev/nvme0n1p2: Partição a ser montada.
-# /mnt/var/cache/pacman/pkg: Ponto de montagem do subvolume var_cache_pacman.
+# Monta o subvolume var_cache_pacman.
+```
 
-# Instalar o sistema base do Arch Linux
+## 8. Instalar o Sistema Base
+
+```bash
 pacstrap /mnt base linux linux-firmware base-devel vim dhcpcd
-# pacstrap: Instala pacotes no sistema montado.
-# /mnt: Diretório onde o sistema está montado.
-# base, linux, linux-firmware, base-devel, vim, dhcpcd: Pacotes a serem instalados.
+# Instala pacotes base no sistema montado.
+```
 
-# Gerar o fstab
+## 9. Gerar o fstab
+
+```bash
 genfstab -U /mnt >> /mnt/etc/fstab
-# genfstab: Gera um arquivo fstab.
-# -U: Usa UUIDs para os sistemas de arquivos.
-# /mnt: Diretório onde o sistema está montado.
-# >> /mnt/etc/fstab: Acrescenta a saída ao arquivo fstab.
-
-# Verificar o arquivo fstab para garantir que as entradas estão corretas
+# Gera o arquivo fstab usando UUIDs.
 cat /mnt/etc/fstab
-# cat: Exibe o conteúdo de um arquivo.
-# /mnt/etc/fstab: Arquivo fstab gerado.
+# Verifica o conteúdo do arquivo fstab.
+```
 
-# Entrar no novo sistema instalado
+## 10. Entrar no Novo Sistema
+
+```bash
 arch-chroot /mnt
-# arch-chroot: Ferramenta para trocar root para o novo sistema instalado.
-# /mnt: Diretório onde o sistema está montado.
+# Troca para o novo sistema instalado.
+```
 
-# Configurar o timezone
+## 11. Configurar Timezone e Relógio
+
+```bash
 ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
-# ln -sf: Cria um link simbólico.
-# /usr/share/zoneinfo/Region/City: Caminho do timezone.
-# /etc/localtime: Destino do link simbólico.
+# Configura o timezone.
 
 hwclock --systohc
-# hwclock --systohc: Define o relógio de hardware a partir do relógio do sistema.
+# Define o relógio de hardware a partir do relógio do sistema.
+```
 
-# Verificar data e hora
-date
-# date: Exibe a data e hora atuais.
+## 12. Configurar Localização
 
-# Configurar a localização
+```bash
 vim /etc/locale.gen
-# vim: Editor de texto.
-# /etc/locale.gen: Arquivo de configuração de locales.
+# Abre o arquivo de configuração de locales no editor Vim.
 
 locale-gen
-# locale-gen: Gera os locales especificados.
+# Gera os locales especificados.
 
 echo KEYMAP=br-abnt2 > /etc/vconsole.conf
-# echo KEYMAP=br-abnt2 > /etc/vconsole.conf: Define o layout do teclado para o console virtual.
+# Define o layout do teclado para o console virtual.
+```
 
-# Configurar o hostname
+## 13. Configurar o Hostname
+
+```bash
 echo arch > /etc/hostname
-# echo arch > /etc/hostname: Define o hostname para "arch".
+# Define o hostname para "arch".
 
-# Adicionar correspondências no arquivo /etc/hosts
 echo "127.0.0.1    localhost" >> /etc/hosts
-# echo: Adiciona a linha especificada ao arquivo /etc/hosts.
-
 echo "::1          localhost" >> /etc/hosts
-# echo: Adiciona a linha especificada ao arquivo /etc/hosts.
-
 echo "127.0.1.1    meu-hostname.localdomain meu-hostname" >> /etc/hosts
-# echo: Adiciona a linha especificada ao arquivo /etc/hosts.
+# Adiciona correspondências no arquivo /etc/hosts.
+```
 
-# Definir senha do root
+## 14. Definir Senha do Root
+
+```bash
 passwd
-# passwd: Define a senha do usuário root.
+# Define a senha do usuário root.
+```
 
-# Criar usuário
+## 15. Criar Usuário
+
+```bash
 useradd -m -g users -G wheel,video,audio,kvm -s /bin/bash arch
-# useradd: Adiciona um novo usuário.
-# -m: Cria um diretório home para o usuário.
-# -g users: Define o grupo primário do usuário.
-# -G wheel,video,audio,kvm: Define grupos adicionais para o usuário.
-# -s /bin/bash: Define o shell do usuário.
-# arch: Nome do usuário.
+# Adiciona um novo usuário.
 
 passwd arch
-# passwd arch: Define a senha para o usuário "arch".
+# Define a senha para o usuário "arch".
+```
 
-# Pacotes essenciais
+## 16. Instalar Pacotes Essenciais
+
+```bash
 pacman -Sy dosfstools os-prober mtools network-manager-applet networkmanager wpa_supplicant wireless_tools dialog sudo
-# pacman: Gerenciador de pacotes do Arch Linux.
-# -Sy: Sincroniza os repositórios e instala os pacotes especificados.
-# dosfstools, os-prober, mtools, network-manager-applet, networkmanager, wpa_supplicant, wireless_tools, dialog, sudo: Pacotes a serem instalados.
+# Instala pacotes essenciais.
+```
 
-# Instalar o bootloader GRUB
+## 17. Instalar e Configurar o Bootloader GRUB
+
+```bash
 pacman -S grub efibootmgr
-# pacman: Gerenciador de pacotes do Arch Linux.
-# -S: Instala os pacotes especificados.
-# grub, efibootmgr: Pacotes a serem instalados.
+# Instala o GRUB e o efibootmgr.
 
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch --recheck
-# grub-install: Instala o GRUB.
-# --target=x86_64-efi: Especifica o alvo para o GRUB.
-# --efi-directory=/boot: Especifica o diretório EFI.
-# --bootloader-id=arch: Define o identificador do bootloader.
-# --recheck: Verifica novamente todos os dispositivos.
+# Instala o GRUB no modo EFI.
 
 grub-mkconfig -o /boot/grub/grub.cfg
-# grub-mkconfig: Gera o arquivo de configuração do GRUB.
-# -o /boot/grub/grub.cfg: Especifica o local de saída do arquivo de configuração.
+# Gera o arquivo de configuração do GRUB.
+```
 
-# Configurar zRAM para swap
+## 18. Configurar zRAM para Swap
+
+```bash
 pacman -S zramswap
-# pacman: Gerenciador de pacotes do Arch Linux.
-# -S: Instala o pacote especificado.
-# zramswap: Pacote a ser instalado.
+# Instala o zramswap.
 
 systemctl enable zramswap.service
-# systemctl: Gerencia serviços do systemd.
-# enable: Habilita o serviço para iniciar automaticamente.
-# zramswap.service: Serviço a ser habilitado.
+# Habilita o serviço de zramswap.
+```
 
-# Sair do chroot, desmontar as partições e reiniciar
+## 19. Sair do Chroot, Desmontar Partições e Reiniciar
+
+```bash
 exit
-# exit: Sai do chroot.
+# Sai do chroot.
 
 umount -R /mnt
-# umount: Desmonta um sistema de arquivos.
-# -R: Recursivamente desmonta todos os sistemas de arquivos montados em /mnt.
+# Desmonta recursivamente todas as partições montadas.
 
 reboot
-# reboot: Reinicia o sistema.
+# Reinicia o sistema.
+```
 
-# Adicionar privilégios de root ao usuário
-su -
-# su -: Troca para o usuário root.
+## 20. Configuração Pós-Instalação
 
-EDITOR=vim visudo
-# EDITOR=vim visudo: Abre o arquivo sudoers no editor Vim para edição.
+```bash
+systemctl enable NetworkManager
+# Habilita o serviço de NetworkManager.
 
-# Descomentar a linha => %wheel ALL=(ALL:ALL) ALL
-# No editor, encontre a linha com `%wheel ALL=(ALL:ALL) ALL` e remova o símbolo de comentário (#) para dar privilégios de sudo aos usuários do grupo wheel.
+systemctl start NetworkManager
+# Inicia o serviço de NetworkManager.
 
-echo "LANG=en_US.UTF-8" > /etc/locale.conf
-# echo "LANG=en_US.UTF-8" > /etc/locale.conf: Define a variável de ambiente LANG para en_US.UTF-8.
-
-# Ativar processos
-systemctl enable NetworkManager --now
-# systemctl: Gerencia serviços do systemd.
-# enable: Habilita o serviço para iniciar automaticamente.
-# NetworkManager: Serviço a ser habilitado.
-# --now: Inicia o serviço imediatamente.
-
-systemctl enable dhcpcd --now
-# systemctl: Gerencia serviços do systemd.
-# enable: Habilita o serviço para iniciar automaticamente.
-# dhcpcd: Serviço a ser habilitado.
-# --now: Inicia o serviço imediatamente.
-
-# Verificar se está com internet
-ping google.com
-# ping: Envia pacotes ICMP para testar a conectividade de rede.
-# google.com: Endereço a ser testado.
-
-# Codecs
-pacman -Sy gstreamer ffmpeg gst-plugins-ugly gst-plugins-good gst-plugins-base gst-plugins-bad gst-libav
-# pacman: Gerenciador de pacotes do Arch Linux.
-# -Sy: Sincroniza os repositórios e instala os pacotes especificados.
-# gstreamer, ffmpeg, gst-plugins-ugly, gst-plugins-good, gst-plugins-base, gst-plugins-bad, gst-libav: Pacotes a serem instalados.
-
-pacman -Syyuu
-# pacman: Gerenciador de pacotes do Arch Linux.
-# -Syyuu: Força a sincronização dos repositórios e atualiza todos os pacotes para a versão mais recente.
-
-pacman -S reflector
-# pacman: Gerenciador de pacotes do Arch Linux.
-# -S: Instala o pacote especificado.
-# reflector: Pacote a ser instalado.
-
-reflector -c Brazil --save /etc/pacman.d/mirrorlist
-# reflector: Ferramenta para gerenciar a lista de espelhos do Arch Linux.
-# -c Brazil: Seleciona espelhos do Brasil.
-# --save /etc/pacman.d/mirrorlist: Salva a lista de espelhos em /etc/pacman.d/mirrorlist.
-
-sudo pacman -S xf86-video-amdgpu mesa
-# sudo: Executa um comando como superusuário.
-# pacman: Gerenciador de pacotes do Arch Linux.
-# -S: Instala os pacotes especificados.
-# xf86-video-amdgpu, mesa: Pacotes a serem instalados.
-
-pacman -S xorg-server xorg-xinit plasma-wayland-session plasma xorg-xwayland
-# pacman: Gerenciador de pacotes do Arch Linux.
-# -S: Instala os pacotes especificados.
-# xorg-server, xorg-xinit, plasma-wayland-session, plasma, xorg-xwayland: Pacotes a serem instalados.
-
-systemctl enable sddm.service
-# systemctl: Gerencia serviços do systemd.
-# enable: Habilita o serviço para iniciar automaticamente.
-# sddm.service: Serviço a ser habilitado.
-
-# Caso de erro
-sudo pacman -S sddm
-# sudo: Executa um comando como superusuário.
-# pacman: Gerenciador de pacotes do Arch Linux.
-# -S: Instala o pacote especificado.
-# sddm: Pacote a ser instalado.
-
-systemctl disable lightdm.service
-# systemctl: Gerencia serviços do systemd.
-# disable: Desabilita o serviço para não iniciar automaticamente.
-# lightdm.service: Serviço a ser desabilitado.
-
-systemctl enable sddm.service
-# systemctl: Gerencia serviços do systemd.
-# enable: Habilita o serviço para iniciar automaticamente.
-# sddm.service: Serviço a ser habilitado.
-
-reboot
-# reboot: Reinicia o sistema.
+# (Opcional) Instalar ambiente gráfico, drivers e gerenciador de login.
+# Exemplo: KDE Plasma, drivers NVIDIA/AMD, e SDDM.
+```
