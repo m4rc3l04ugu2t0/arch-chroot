@@ -244,5 +244,3 @@ systemctl start NetworkManager
 # Exemplo: KDE Plasma, drivers NVIDIA/AMD, e SDDM.
 ```
 ```
-
-Basta copiar e colar este conteúdo no seu arquivo `README.md`. Certifique-se de que os comandos estão cercados por triplas crases (\`\`\`) para que sejam renderizados corretamente como blocos de código. Isso tornará seu guia mais apresentável e legível diretamente na página do GitHub.
