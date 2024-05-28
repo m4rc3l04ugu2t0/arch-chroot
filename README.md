@@ -45,9 +45,47 @@ timedatectl set-ntp true
 fdisk /dev/nvme0n1
 # Utilitário de partição de disco para o disco NVMe.
 
+# Seta o teclado
+loadkeys br-abnt2
+# loadkeys: Comando para carregar o layout do teclado.
+# br-abnt2: Especifica o layout do teclado brasileiro ABNT2.
+
+# Conectar ao Wi-Fi
+rfkill unblock all
+# rfkill: Gerencia dispositivos de rádio (Wi-Fi, Bluetooth, etc.).
+# unblock all: Desbloqueia todos os dispositivos de rádio.
+
+iwctl station list
+# iwctl: Ferramenta de linha de comando do iwd para gerenciar conexões Wi-Fi.
+# station list: Lista todas as interfaces de estação Wi-Fi.
+
+iwctl
+# iwctl: Inicia a ferramenta de linha de comando do iwd.
+
+# Dentro do iwctl
+station list        
+# station list: Lista todas as interfaces de estação Wi-Fi.
+
+station wlan0 get-networks
+# station wlan0 get-networks: Lista todas as redes disponíveis para a interface wlan0.
+
+station wlan0 connect nome-da-rede
+# station wlan0 connect nome-da-rede: Conecta à rede especificada.
+
+# Atualizar o relógio do sistema
+timedatectl set-ntp true
+# timedatectl: Comando para gerenciar configurações de data e hora.
+# set-ntp true: Habilita a sincronização automática do tempo via NTP (Network Time Protocol).
+
+# Particionar o disco usando fdisk
+fdisk /dev/nvme0n1
+# fdisk: Utilitário de particionamento de disco.
+# /dev/nvme0n1: Especifica o disco NVMe.
+
 # Criar a tabela de partições:
 # - /dev/nvme0n1p1: Partição EFI, 512 MB
 # - /dev/nvme0n1p2: Partição Btrfs, restante do espaço
+
 ```
 
 ## 5. Formatar as Partições
