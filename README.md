@@ -1,8 +1,8 @@
 # Installation Guide For Arch Linux
 
-This guide  provides detailed instructions for installing guide for Arch Linux, including disk partitioning, mounting file systems and installing essential packages.
+This guide provides detailed instructions for installing Arch Linux, including disk partitioning, mounting file systems, and installing essential packages.
 
-## 1. Configure keyboard
+## 1. Configure Keyboard
 
 ```bash
 loadkeys br-abnt2
@@ -18,226 +18,223 @@ rfkill unblock all
 iwctl
 # Start the tool from the command line for iwd.
 
-# Dentro do iwctl:
+# Inside iwctl:
 station list
-# List all networks areas.
+# List all network interfaces.
 
 station wlan0 get-networks
 # List all networks on the wlan interface.
 # Your interface name may be different.
 
-station wlan0 connect nome-da-rede
-# Connect to the wi-fi.
+station wlan0 connect network-name
+# Connect to the Wi-Fi.
 ```
 
-## 3. Synchronize the system clock 
+## 3. Synchronize the System Clock
 
 ```bash
 timedatectl set-ntp true
 # Enables automatic time synchronization via NTP.
 ```
 
-## 4. Partition the disk
+## 4. Partition the Disk
 
 ```bash
 fdisk /dev/nvme0n1
 # Disk partition utility for NVMe disk.
 
 # Create partition table:
-# - /dev/nvme0n1p1: Patitiopn EFI, 512 MB
-# - /dev/nvme0n1p2: Patition Btrfs, remaining disk 
+# - /dev/nvme0n1p1: EFI Partition, 512 MB
+# - /dev/nvme0n1p2: Btrfs Partition, remaining disk 
 ```
 
-## 5. Format patition 
+## 5. Format Partitions
 
 ```bash
 mkfs.fat -F32 /dev/nvme0n1p1
 # Create a FAT32 file system in the EFI partition.
 
 mkfs.btrfs /dev/nvme0n1p2
-# Create a Btrfs file system in the second patititon. 
+# Create a Btrfs file system in the second partition. 
 ```
 
-## 6. Create Btrfs Subvolumes. 
+## 6. Create Btrfs Subvolumes
 
 ```bash
 mount /dev/nvme0n1p2 /mnt
-# Monta a partição Btrfs temporariamente.
-# Mount the Btrfs patition temporarily.
+# Mount the Btrfs partition temporarily.
 
 btrfs su cr /mnt/@
 # Create a subvolume at the root.
 
 btrfs su cr /mnt/@home
-# Create a subvolume at the home.
+# Create a subvolume at home.
 
 btrfs su cr /mnt/@snapshots
-# Create subvolume at the snapshots.
+# Create a subvolume at snapshots.
 
 btrfs su cr /mnt/@var_log
-# Create subvolume at the /var/log.
+# Create a subvolume at /var/log.
 
 btrfs su cr /mnt/@var_cache_pacman
-# Create subvolume at the /var/cache/pacman/pkg.
+# Create a subvolume at /var/cache/pacman/pkg.
 
 umount /mnt
 # Unmount the partition temporarily. 
 ```
 
-## 7. Mount subvolume 
+## 7. Mount Subvolumes
 
 ```bash
 mount -o subvol=@ /dev/nvme0n1p2 /mnt
-# Mount a subvolume at the root.
+# Mount the subvolume at the root.
 
 mkdir /mnt/{boot,home,.snapshots,var/log,var/cache/pacman/pkg}
-# Cria os diretórios necessários.
-# Create the necessary directory 
+# Create the necessary directories.
 
 mount /dev/nvme0n1p1 /mnt/boot
-# Create the patititon EFI.
+# Mount the EFI partition.
 
 mount -o subvol=@home /dev/nvme0n1p2 /mnt/home
-# Monta o subvolume home.
-# Mount subvolume at the home.
+# Mount the subvolume at home.
 
 mount -o subvol=@snapshots /dev/nvme0n1p2 /mnt/.snapshots
-# Monta o subvolume snapshots.
+# Mount the subvolume at snapshots.
 
 mount -o subvol=@var_log /dev/nvme0n1p2 /mnt/var/log
-# Monta o subvolume var_log.
+# Mount the subvolume at var_log.
 
 mount -o subvol=@var_cache_pacman /dev/nvme0n1p2 /mnt/var/cache/pacman/pkg
-# Monta o subvolume var_cache_pacman.
+# Mount the subvolume at var_cache_pacman.
 ```
 
-## 8. Instalar o Sistema Base
+## 8. Install the Base System
 
 ```bash
 pacstrap /mnt base linux linux-firmware base-devel vim dhcpcd
-# Instala pacotes base no sistema montado.
+# Install base packages on the mounted system.
 ```
 
-## 9. Gerar o fstab
+## 9. Generate the fstab
 
 ```bash
 genfstab -U /mnt >> /mnt/etc/fstab
-# Gera o arquivo fstab usando UUIDs.
+# Generate the fstab file using UUIDs.
 cat /mnt/etc/fstab
-# Verifica o conteúdo do arquivo fstab.
+# Verify the content of the fstab file.
 ```
 
-## 10. Entrar no Novo Sistema
+## 10. Enter the New System
 
 ```bash
 arch-chroot /mnt
-# Troca para o novo sistema instalado.
+# Switch to the new installed system.
 ```
 
-## 11. Configurar Timezone e Relógio
+## 11. Configure Timezone and Clock
 
 ```bash
 ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
-# Configura o timezone.
+# Set the timezone.
 
 hwclock --systohc
-# Define o relógio de hardware a partir do relógio do sistema.
+# Set the hardware clock from the system clock.
 ```
 
-## 12. Configurar Localização
+## 12. Configure Localization
 
 ```bash
 vim /etc/locale.gen
-# Abre o arquivo de configuração de locales no editor Vim.
+# Open the locale configuration file in Vim.
 
 locale-gen
-# Gera os locales especificados.
+# Generate the specified locales.
 
 echo KEYMAP=br-abnt2 > /etc/vconsole.conf
-# Define o layout do teclado para o console virtual.
+# Set the keyboard layout for the virtual console.
 ```
 
-## 13. Configurar o Hostname
+## 13. Configure Hostname
 
 ```bash
 echo arch > /etc/hostname
-# Define o hostname para "arch".
+# Set the hostname to "arch".
 
 echo "127.0.0.1    localhost" >> /etc/hosts
 echo "::1          localhost" >> /etc/hosts
-echo "127.0.1.1    meu-hostname.localdomain meu-hostname" >> /etc/hosts
-# Adiciona correspondências no arquivo /etc/hosts.
+echo "127.0.1.1    my-hostname.localdomain my-hostname" >> /etc/hosts
+# Add entries to the /etc/hosts file.
 ```
 
-## 14. Definir Senha do Root
+## 14. Set Root Password
 
 ```bash
 passwd
-# Define a senha do usuário root.
+# Set the root user's password.
 ```
 
-## 15. Criar Usuário
+## 15. Create User
 
 ```bash
 useradd -m -g users -G wheel,video,audio,kvm -s /bin/bash arch
-# Adiciona um novo usuário.
+# Add a new user.
 
 passwd arch
-# Define a senha para o usuário "arch".
+# Set the password for the user "arch".
 ```
 
-## 16. Instalar Pacotes Essenciais
+## 16. Install Essential Packages
 
 ```bash
 pacman -Sy dosfstools os-prober mtools network-manager-applet networkmanager wpa_supplicant wireless_tools dialog sudo
-# Instala pacotes essenciais.
+# Install essential packages.
 ```
 
-## 17. Instalar e Configurar o Bootloader GRUB
+## 17. Install and Configure the GRUB Bootloader
 
 ```bash
 pacman -S grub efibootmgr
-# Instala o GRUB e o efibootmgr.
+# Install GRUB and efibootmgr.
 
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch --recheck
-# Instala o GRUB no modo EFI.
+# Install GRUB in EFI mode.
 
 grub-mkconfig -o /boot/grub/grub.cfg
-# Gera o arquivo de configuração do GRUB.
+# Generate the GRUB configuration file.
 ```
 
-## 18. Configurar zRAM para Swap
+## 18. Configure zRAM for Swap
 
 ```bash
 pacman -S zramswap
-# Instala o zramswap.
+# Install zramswap.
 
 systemctl enable zramswap.service
-# Habilita o serviço de zramswap.
+# Enable the zramswap service.
 ```
 
-## 19. Sair do Chroot, Desmontar Partições e Reiniciar
+## 19. Exit Chroot, Unmount Partitions, and Reboot
 
 ```bash
 exit
-# Sai do chroot.
+# Exit chroot.
 
 umount -R /mnt
-# Desmonta recursivamente todas as partições montadas.
+# Recursively unmount all mounted partitions.
 
 reboot
-# Reinicia o sistema.
+# Reboot the system.
 ```
 
-## 20. Configuração Pós-Instalação
+## 20. Post-Installation Configuration
 
 ```bash
 systemctl enable NetworkManager
-# Habilita o serviço de NetworkManager.
+# Enable the NetworkManager service.
 
 systemctl start NetworkManager
-# Inicia o serviço de NetworkManager.
+# Start the NetworkManager service.
 
-# (Opcional) Instalar ambiente gráfico, drivers e gerenciador de login.
-# Exemplo: KDE Plasma, drivers NVIDIA/AMD, e SDDM.
+# (Optional) Install graphical environment, drivers, and login manager.
+# Example: KDE Plasma, NVIDIA/AMD drivers, and SDDM.
 ```
