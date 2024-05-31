@@ -5,8 +5,6 @@ use crate::{functions::get_input_user::get_input_user, run_commands::run_command
 pub fn set_hostname() -> Result<(), String> {
     let hostname = get_input_user("Digite seu hostname")?;
 
-    let hostname = hostname;
-
     if hostname.is_empty() {
         return Err("Digite um hostname valido".to_string());
     }
@@ -20,7 +18,7 @@ pub fn set_hostname() -> Result<(), String> {
 
 fn run_hostname(hostname: &str) -> Result<(), String> {
     run_command(
-        &mut Command::new("sh")
+        Command::new("sh")
             .arg("-c")
             .arg(format!("echo {} > /etc/hostname", hostname)),
     )?;
@@ -35,7 +33,7 @@ fn run_hostname(hostname: &str) -> Result<(), String> {
     ];
 
     for command in commands {
-        run_command(&mut Command::new("sh").arg("-c").arg(command))?;
+        run_command(Command::new("sh").arg("-c").arg(command))?;
     }
 
     Ok(())

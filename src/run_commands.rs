@@ -29,8 +29,10 @@ pub fn run_command(command: &mut Command) -> Result<(), String> {
     Ok(())
 }
 
+#[cfg(test)]
 mod test_run_command {
     use super::*;
+    use std::process::Command;
 
     #[test]
     fn test_run_command_valid() {

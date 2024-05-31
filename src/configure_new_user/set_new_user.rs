@@ -35,7 +35,7 @@ pub fn set_password_user(username: &str) -> Result<(), String> {
 
     println!("Digite sua senha");
 
-    run_passwd_command(&password, &username)?;
+    run_passwd_command(&password, username)?;
 
     Ok(())
 }

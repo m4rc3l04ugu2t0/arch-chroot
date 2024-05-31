@@ -8,7 +8,7 @@ use crate::{
 pub fn set_keymaps() -> Result<(), String> {
     let keymap_selected = get_user_selections(&KEYMAPS, "Selecione o layout de taclado");
 
-    run_command(&mut Command::new("sh").arg("-c").arg(format!(
+    run_command(Command::new("sh").arg("-c").arg(format!(
         "echo KEYMAP={} >> /etc/vconsole.conf",
         keymap_selected[0]
     )))?;

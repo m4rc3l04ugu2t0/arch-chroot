@@ -21,7 +21,7 @@ pub fn set_timezone() -> Result<(), String> {
     }
     // Define o fuso horário
     run_command(
-        &mut Command::new("ln")
+        Command::new("ln")
             .arg("-sf")
             .arg(format!("/usr/share/zoneinfo/{}", timezone))
             .arg("/etc/localtime"),
@@ -60,7 +60,7 @@ fn get_date_output() -> Result<(), String> {
     let stdout = String::from_utf8(output.stdout)
         .map_err(|e| format!("Falha ao converter a saída do comando para string: {}", e))?;
 
-    println!("Date: {}", stdout.trim().to_string());
+    println!("Date: {}", stdout.trim());
     Ok(())
 }
 

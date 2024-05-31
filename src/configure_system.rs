@@ -2,7 +2,7 @@ use crate::{
     config_timezone::set_timezone::set_timezone, configure_hostname::set_hostname::set_hostname,
     configure_keymaps::set_keymaps::set_keymaps, configure_lanaguage::set_language::set_language,
     configure_new_user::set_new_user::set_new_user, configure_root::set_root::set_root_default,
-    install_assentials::install_assentials::install_assentials,
+    install_packages::install_assentials::install_assentials,
 };
 use serde::{Deserialize, Serialize};
 use serde_json::{from_reader, to_writer};
@@ -31,20 +31,16 @@ pub fn configure() -> Result<(), String> {
 
     for (i, step) in steps.iter().enumerate().skip(state.step) {
         println!("Executando etapa {}...", i + 1);
-        loop {
-            match step() {
-                Ok(_) => {
-                    state.step = i + 1;
-                    save_state(&state)?;
-                    break;
-                }
-                Err(err) => {
-                    eprintln!("Erro na etapa {}: {}", i + 1, err);
 
-                    println!("Erro completo: {}", err);
-                    save_state(&state)?;
-                    return Err(err);
-                }
+        match step() {
+            Ok(_) => {
+                state.step = i + 1;
+                save_state(&state)?;
+            }
+            Err(err) => {
+                eprintln!("Erro na etapa {}: {}", i + 1, err);
+                save_state(&state)?;
+                return Err(err);
             }
         }
     }

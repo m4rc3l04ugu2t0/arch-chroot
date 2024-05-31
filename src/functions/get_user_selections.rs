@@ -4,7 +4,7 @@ use dialoguer::{theme::ColorfulTheme, MultiSelect};
 pub fn get_user_selections(options: &[&str], text: &str) -> Vec<String> {
     let selections = MultiSelect::with_theme(&custom_theme())
         .with_prompt(text)
-        .items(&options)
+        .items(options)
         .interact()
         .unwrap();
 
@@ -18,13 +18,9 @@ pub fn get_user_selections(options: &[&str], text: &str) -> Vec<String> {
 }
 
 fn custom_theme() -> ColorfulTheme {
-    let mut theme = ColorfulTheme::default();
-
-    // Estilo para o item ativo (selecionado)
-    theme.active_item_style = Style::new().fg(console::Color::Cyan).bold();
-
-    // Estilo para o item inativo (não selecionado)
-    theme.inactive_item_style = Style::new().fg(console::Color::White);
-
-    theme
+    ColorfulTheme {
+        active_item_style: Style::new().fg(dialoguer::console::Color::Cyan).bold(),
+        inactive_item_style: Style::new().fg(dialoguer::console::Color::White),
+        ..Default::default()
+    }
 }

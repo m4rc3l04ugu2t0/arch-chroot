@@ -23,14 +23,12 @@ pub fn set_language() -> Result<(), String> {
         "Selecione um linguagem, caso selecione apenas uma ISO gerera um error, selecione as duas",
     );
 
-    if language_selected.len() < 1 {
+    if language_selected.is_empty() {
         return Err("Selecione uma linguagem, nâo apenas uma ISO".to_string());
     }
 
     edit_locale_gen(language_selected.clone())?;
-
-    let output_command = run_command(&mut Command::new("locale-gen"))?;
-    println!("{:#?}", output_command);
+    run_command(&mut Command::new("locale-gen"))?;
 
     configure_locale_conf(language_selected.clone())?;
 
