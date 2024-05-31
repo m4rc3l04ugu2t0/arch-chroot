@@ -43,5 +43,7 @@ pub fn install_assentials() -> Result<(), String> {
     run_command(&mut Command::new("grub-mkconfig").args(&["-o", "/boot/grub/grub.cfg"]))?;
 
     run_command(&mut Command::new("cat").arg("/boot/grub/grub.cfg"))?;
+
+    println!("Sucesso!");
     Ok(())
 }

@@ -9,6 +9,7 @@ use crate::{
 };
 
 pub fn set_new_user() -> Result<(), String> {
+    println!("Criar new user.");
     let username = get_input_user("Digite seu nome de usuario:")?;
 
     run_command(
@@ -23,7 +24,9 @@ pub fn set_new_user() -> Result<(), String> {
             .arg(&username),
     )?;
     println!("User adicionado com sucesso!");
+    println!("Digite a senha pro usuario {}", username);
     set_password_user(&username)?;
+    println!("Sucesso!");
     Ok(())
 }
 

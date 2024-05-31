@@ -11,6 +11,7 @@ fn set_root<T: Fn() -> Result<String, String>, C: Fn(&str, &str) -> Result<(), S
     let password = read_password().map_err(|err| format!("Error: {}", err))?;
     run_command(&password, "root")?;
 
+    println!("Sucesso!");
     Ok(())
 }
 

@@ -13,5 +13,7 @@ pub fn set_keymaps() -> Result<(), String> {
         keymap_selected[0]
     )))?;
 
+    println!("Sucesso");
+
     Ok(())
 }

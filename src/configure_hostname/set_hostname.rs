@@ -13,6 +13,8 @@ pub fn set_hostname() -> Result<(), String> {
 
     run_hostname(&hostname)?;
 
+    println!("Sucesso!");
+
     Ok(())
 }
 

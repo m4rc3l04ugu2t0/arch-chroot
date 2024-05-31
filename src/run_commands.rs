@@ -22,6 +22,10 @@ pub fn run_command(command: &mut Command) -> Result<(), String> {
         }
     }
 
+    let _ = child
+        .wait()
+        .map_err(|err| format!("Failed to wait on child process: {}", err))?;
+
     Ok(())
 }
 
