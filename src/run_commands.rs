@@ -46,7 +46,7 @@ mod test_run_command {
         let result = run_command(&mut Command::new("lssssss").arg("-a"));
 
         assert_eq!(
-            Err("Falha ao executar comando: No such file or directory (os error 2)".to_string()),
+            Err("Failure to execute commando: No such file or directory (os error 2)".to_string()),
             result
         );
     }
