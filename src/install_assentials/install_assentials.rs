@@ -13,12 +13,13 @@ pub fn install_assentials() -> Result<(), String> {
         input = "dosfstools os-prober mtools network-manager-applet networkmanager wpa_supplicant wireless_tools dialog sudo".to_owned();
     }
 
-    run_command(
+    let output = run_command(
         &mut Command::new("pacman")
             .arg("-S")
             .arg(input)
             .arg("--noconfirm"),
     )?;
+    println!("{:?}", output);
     println!("Sucesso");
 
     println!("Instalando grub e configurando");
