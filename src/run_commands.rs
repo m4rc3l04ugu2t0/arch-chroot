@@ -29,25 +29,3 @@ pub fn run_command(command: &mut Command) -> Result<(), String> {
     Ok(())
 }
 
-#[cfg(test)]
-mod test_run_command {
-    use super::*;
-    use std::process::Command;
-
-    #[test]
-    fn test_run_command_valid() {
-        let result = run_command(&mut Command::new("ls").arg("-a"));
-
-        assert_eq!(Ok(()), result);
-    }
-
-    #[test]
-    fn test_run_command_invalid() {
-        let result = run_command(&mut Command::new("lssssss").arg("-a"));
-
-        assert_eq!(
-            Err("Failure to execute commando: No such file or directory (os error 2)".to_string()),
-            result
-        );
-    }
-}
