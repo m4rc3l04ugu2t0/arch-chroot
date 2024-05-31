@@ -7,7 +7,7 @@ pub fn run_command(command: &mut Command) -> Result<(), String> {
     let mut child = command
         .stdout(Stdio::piped())
         .spawn()
-        .map_err(|e| format!("Falha ao executar comando: {}", e))?;
+        .map_err(|e| format!("Failure to execute commando: {}", e))?;
 
     if let Some(stdout) = child.stdout.take() {
         let reader = BufReader::new(stdout);

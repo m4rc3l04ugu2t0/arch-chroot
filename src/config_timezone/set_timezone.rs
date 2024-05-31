@@ -14,12 +14,12 @@ pub fn set_timezone() -> Result<(), String> {
     let stdin = io::stdin();
     let mut handle = stdin.lock();
     let timezone = read_user_input(&mut handle)?;
-    let timezone = timezone.trim(); // Remover caracteres de espaço em branco
-                                    // Executar o comando para configurar o fuso horário
+    let timezone = timezone.trim();
+
     if !valid_timezone(timezone) {
         return Err(format!("Invalid timezone: {}", timezone));
     }
-    // Define o fuso horário
+
     run_command(
         Command::new("ln")
             .arg("-sf")
@@ -58,7 +58,7 @@ fn get_date_output() -> Result<(), String> {
     }
 
     let stdout = String::from_utf8(output.stdout)
-        .map_err(|e| format!("Falha ao converter a saída do comando para string: {}", e))?;
+        .map_err(|e| format!("Failed to convert command output to string: {}", e))?;
 
     println!("Date: {}", stdout.trim());
     Ok(())

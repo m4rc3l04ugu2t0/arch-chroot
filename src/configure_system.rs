@@ -38,7 +38,7 @@ pub fn configure() -> Result<(), String> {
                 save_state(&state)?;
             }
             Err(err) => {
-                eprintln!("Erro na etapa {}: {}", i + 1, err);
+                eprintln!("Error in step {}: {}", i + 1, err);
                 save_state(&state)?;
                 return Err(err);
             }
@@ -52,8 +52,7 @@ fn load_state() -> Result<State, String> {
     let state_file = "src/state.json";
     if let Ok(file) = OpenOptions::new().read(true).open(state_file) {
         let reader = BufReader::new(file);
-        let state: State =
-            from_reader(reader).map_err(|e| format!("Falha ao ler estado: {}", e))?;
+        let state: State = from_reader(reader).map_err(|e| format!("Fai: {}", e))?;
         Ok(state)
     } else {
         Ok(State { step: 0 })
@@ -67,7 +66,7 @@ fn save_state(state: &State) -> Result<(), String> {
 
     if !state_dir.exists() {
         fs::create_dir_all(state_dir)
-            .map_err(|e| format!("Falha ao criar diretório {}: {}", state_dir.display(), e))?;
+            .map_err(|e| format!("Failure to create folder {}: {}", state_dir.display(), e))?;
     }
 
     let file = OpenOptions::new()
@@ -75,8 +74,8 @@ fn save_state(state: &State) -> Result<(), String> {
         .truncate(true)
         .create(true)
         .open(state_file)
-        .map_err(|e| format!("Falha ao salvar estado: {}", e))?;
-    to_writer(file, state).map_err(|e| format!("Falha ao salvar estado: {}", e))?;
+        .map_err(|e| format!("Failure to save state: {}", e))?;
+    to_writer(file, state).map_err(|e| format!("Failure to save state: {}", e))?;
 
     Ok(())
 }

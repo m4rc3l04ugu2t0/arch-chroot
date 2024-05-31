@@ -3,15 +3,15 @@ use std::process::Command;
 use crate::{functions::get_input_user::get_input_user, run_commands::run_command};
 
 pub fn set_hostname() -> Result<(), String> {
-    let hostname = get_input_user("Digite seu hostname")?;
+    let hostname = get_input_user("Enter your hostname.")?;
 
     if hostname.is_empty() {
-        return Err("Digite um hostname valido".to_string());
+        return Err("Enter a valid hostname".to_string());
     }
 
     run_hostname(&hostname)?;
 
-    println!("Sucesso!");
+    println!("Hosname successfully configured!");
 
     Ok(())
 }
