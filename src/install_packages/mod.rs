@@ -1,1 +1,1 @@
-pub mod install_assentials;
+pub mod install_essentials;
