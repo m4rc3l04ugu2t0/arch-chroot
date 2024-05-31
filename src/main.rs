@@ -4,12 +4,12 @@ mod config;
 mod config_timezone;
 mod configure_hostname;
 mod configure_keymaps;
-mod configure_lanaguage;
+mod configure_language;
 mod configure_new_user;
 mod configure_root;
 mod configure_system;
 mod functions;
-mod install_assentials;
+mod install_packages;
 mod run_commands;
 
 fn main() {
