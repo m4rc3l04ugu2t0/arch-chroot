@@ -8,34 +8,34 @@ pub fn run_passwd_command(password: &str, user_name: &str) -> Result<(), String>
         .arg(user_name)
         .stdin(Stdio::piped())
         .spawn()
-        .map_err(|err| format!("Erro ao iniciar o comando passwd: {}", err))?;
+        .map_err(|err| format!("Error: {}", err))?;
 
     if let Some(stdin) = &mut child.stdin {
         writeln!(stdin, "{}", password).map_err(|e| {
             format!(
-                "Falha ao escrever a senha no stdin (primeira vez). Erro: {}",
+                "Failed to write password to stdin(first time). Error: {}",
                 e
             )
         })?;
         writeln!(stdin, "{}", password).map_err(|e| {
             format!(
-                "Falha ao escrever a senha no stdin (segunda vez). Erro: {}",
+                "Failed to write password to stdin(second time). Error: {}",
                 e
             )
         })?;
     } else {
-        return Err("Erro: Não foi possível acessar o stdin do comando passwd".into());
+        return Err("Enable to access stdin from `passwd` command.".into());
     }
 
     let output = child
         .wait_with_output()
-        .map_err(|err| format!("Erro ao aguardar a saída do comando passwd: {}", err))?;
+        .map_err(|err| format!("Error: {}", err))?;
 
     if output.status.success() {
         Ok(())
     } else {
         Err(format!(
-            "Falha ao alterar a senha. Saída do comando: {}",
+            "Error: {}",
             String::from_utf8_lossy(&output.stderr)
         ))
     }
