@@ -3,10 +3,10 @@ name: CI/CD Rust Arch Install Dist
 on:
   push:
     branches:
-      - dist
+      - dev
   pull_request:
     branches:
-      - dist
+      - dev
   workflow_dispatch:
 
 jobs:
