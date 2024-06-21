@@ -3,26 +3,39 @@ use std::process::Command;
 use crate::{functions::get_input_user::get_input_user, run_commands::run_command};
 
 pub fn install_assentials() -> Result<(), String> {
-    let default = "dosfstools os-prober mtools network-manager-applet networkmanager wpa_supplicant wireless_tools dialog sudo";
+    let default = vec![
+        "dosfstools",
+        "os-prober mtools",
+        "network-manager-applet",
+        "networkmanager",
+        "wpa_supplicant",
+        "wireless_tools",
+        "dialog",
+        "sudo",
+    ];
     println!(
         "Enter the name of your essential packages: \n\
     (defalut: {}",
-        default
+        default.join(", ")
     );
     println!("Press `enter` to default");
 
-    let mut input = get_input_user("Enter packages name.")?;
+    let input = get_input_user("Enter packages name.")?;
+    let args;
 
     if input.trim().is_empty() {
-        input = default.into();
+        args = default;
+    } else {
+        args = input.split_whitespace().collect();
     }
 
     run_command(
         Command::new("pacman")
             .arg("-S")
-            .arg(input)
+            .args(args)
             .arg("--noconfirm"),
     )?;
+
     println!("Successfully.");
 
     println!("Configuring grub.");
