@@ -1,6 +1,9 @@
 use std::process::Command;
 
-use crate::{functions::get_input_user::get_input_user, run_commands::run_command};
+use crate::{
+    functions::get_input_user::get_input_user,
+    install_packages::configure_bootloader::configure_bootloader, run_commands::run_command,
+};
 
 pub fn install_assentials() -> Result<(), String> {
     let default = vec![
@@ -40,6 +43,8 @@ pub fn install_assentials() -> Result<(), String> {
     println!("Successfully.");
 
     println!("Configuring grub.");
+
+    configure_bootloader()?;
 
     run_command(
         Command::new("pacman")
