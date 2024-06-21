@@ -5,7 +5,8 @@ use crate::{functions::get_input_user::get_input_user, run_commands::run_command
 pub fn install_assentials() -> Result<(), String> {
     let default = vec![
         "dosfstools",
-        "os-prober mtools",
+        "os-prober",
+        "mtools",
         "network-manager-applet",
         "networkmanager",
         "wpa_supplicant",
